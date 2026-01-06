@@ -10,11 +10,15 @@ export type Segment = '新規' | '既存';
 
 // 案件ステータス
 export type ProjectStatus = 
+  | '未着手'
+  | '手続き中'
   | '採用活動中'
+  | '入社待機中'
   | '対応完了'
   | '保留'
-  | '停止'
-  | '未着手';
+  | '停止手続き中'
+  | '解約'
+  | '不要';
 
 // 管轄部署
 export type Department = '推進部' | 'SV部' | 'その他' | '要確認';
@@ -243,7 +247,17 @@ export interface MediaFormData {
 
 export const CATEGORIES: Category[] = ['就労', 'GH', '看護', '兼務', '要確認'];
 export const SEGMENTS: Segment[] = ['新規', '既存'];
-export const PROJECT_STATUSES: ProjectStatus[] = ['採用活動中', '対応完了', '保留', '停止', '未着手'];
+export const PROJECT_STATUSES: ProjectStatus[] = [
+  '未着手',
+  '手続き中',
+  '採用活動中',
+  '入社待機中',
+  '対応完了',
+  '保留',
+  '停止手続き中',
+  '解約',
+  '不要',
+];
 export const DEPARTMENTS: Department[] = ['推進部', 'SV部', 'その他', '要確認'];
 export const POSITIONS: Position[] = ['サビ管', '管理者', '支援員', 'サ管兼務', '世話人', '夜間支援員', '看護師', '看・管理者', 'その他'];
 export const EMPLOYMENT_TYPES: EmploymentType[] = ['正社員', 'パート', '契約職員', '要確認'];

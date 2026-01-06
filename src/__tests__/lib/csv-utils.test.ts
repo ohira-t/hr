@@ -161,7 +161,10 @@ describe('CSV Utils', () => {
     };
 
     const validateStatus = (value: string): boolean => {
-      const validStatuses = ['採用活動中', '対応完了', '保留'];
+      const validStatuses = [
+        '未着手', '手続き中', '採用活動中', '入社待機中', 
+        '対応完了', '保留', '停止手続き中', '解約', '不要'
+      ];
       return validStatuses.includes(value);
     };
 
@@ -179,9 +182,15 @@ describe('CSV Utils', () => {
     });
 
     it('should validate status values', () => {
+      expect(validateStatus('未着手')).toBe(true);
+      expect(validateStatus('手続き中')).toBe(true);
       expect(validateStatus('採用活動中')).toBe(true);
+      expect(validateStatus('入社待機中')).toBe(true);
       expect(validateStatus('対応完了')).toBe(true);
       expect(validateStatus('保留')).toBe(true);
+      expect(validateStatus('停止手続き中')).toBe(true);
+      expect(validateStatus('解約')).toBe(true);
+      expect(validateStatus('不要')).toBe(true);
       expect(validateStatus('無効')).toBe(false);
     });
   });

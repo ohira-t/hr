@@ -114,14 +114,24 @@ export function getSegmentColor(segment: Segment): string {
  */
 export function getStatusColor(status: string): string {
   switch (status) {
+    case '未着手':
+      return 'bg-slate-100 text-slate-600';
+    case '手続き中':
+      return 'bg-cyan-100 text-cyan-700';
     case '採用活動中':
       return 'bg-green-100 text-green-800';
+    case '入社待機中':
+      return 'bg-indigo-100 text-indigo-700';
     case '対応完了':
       return 'bg-blue-100 text-blue-800';
     case '保留':
       return 'bg-yellow-100 text-yellow-800';
-    case '停止':
+    case '停止手続き中':
+      return 'bg-orange-100 text-orange-700';
+    case '解約':
       return 'bg-red-100 text-red-800';
+    case '不要':
+      return 'bg-gray-200 text-gray-500';
     default:
       return 'bg-gray-100 text-gray-800';
   }

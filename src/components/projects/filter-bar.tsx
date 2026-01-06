@@ -58,9 +58,15 @@ const segments: { value: Segment | 'all'; label: string }[] = [
 
 const statuses: { value: ProjectStatus | 'all'; label: string }[] = [
   { value: 'all', label: '全て' },
+  { value: '未着手', label: '未着手' },
+  { value: '手続き中', label: '手続き中' },
   { value: '採用活動中', label: '採用活動中' },
+  { value: '入社待機中', label: '入社待機中' },
   { value: '対応完了', label: '対応完了' },
   { value: '保留', label: '保留' },
+  { value: '停止手続き中', label: '停止手続き中' },
+  { value: '解約', label: '解約' },
+  { value: '不要', label: '不要' },
 ];
 
 const mediaOptions: MediaName[] = [
