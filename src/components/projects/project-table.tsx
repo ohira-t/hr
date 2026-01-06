@@ -123,9 +123,12 @@ export function ProjectTable({
     columnHelper.accessor('prefecture', {
       header: 'エリア',
       cell: (info) => (
-        <span className="text-sm text-gray-600">
-          {info.getValue()}{info.row.original.city && ` ${info.row.original.city}`}
-        </span>
+        <div>
+          <p className="text-sm text-gray-900">{info.getValue()}</p>
+          {info.row.original.city && (
+            <p className="text-xs text-gray-500 mt-0.5">{info.row.original.city}</p>
+          )}
+        </div>
       ),
       size: 120,
     }),
