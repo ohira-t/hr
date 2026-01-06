@@ -11,9 +11,9 @@ export interface SelectNativeProps
 const SelectNative = React.forwardRef<HTMLSelectElement, SelectNativeProps>(
   ({ className, children, selectSize = "default", ...props }, ref) => {
     const sizeClasses = {
-      sm: "h-8 py-1.5 text-[13px] pr-8",
-      default: "h-10 py-2.5 text-sm pr-10",
-      lg: "h-11 py-3 text-sm pr-11",
+      sm: "h-8 text-[13px] pr-8",
+      default: "h-10 text-sm pr-10",
+      lg: "h-11 text-sm pr-11",
     }
 
     return (
@@ -28,9 +28,9 @@ const SelectNative = React.forwardRef<HTMLSelectElement, SelectNativeProps>(
             // パディング（左側は通常、右側はアイコン用に広め）
             "pl-3.5",
             sizeClasses[selectSize],
-            // タイポグラフィ
+            // タイポグラフィ（天地中央）
             "font-normal text-gray-900",
-            "tracking-[-0.01em]",
+            "leading-none tracking-[-0.01em]",
             // トランジション
             "transition-all duration-200 ease-out",
             // ホバー

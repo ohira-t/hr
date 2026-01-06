@@ -46,6 +46,13 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
     setEditedProject({ ...editedProject, [field]: value });
   };
 
+  const handleMediaChange = (mediaId: number, field: 'status' | 'startDate' | 'endDate', value: string) => {
+    const updatedMedia = editedProject.media.map(m => 
+      m.id === mediaId ? { ...m, [field]: field === 'startDate' || field === 'endDate' ? (value ? new Date(value) : null) : value } : m
+    );
+    setEditedProject({ ...editedProject, media: updatedMedia });
+  };
+
   const handleSave = async () => {
     setIsSubmitting(true);
     // TODO: API呼び出し
@@ -479,27 +486,52 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-3">
-              {project.media.map((media) => (
-                <div key={media.id} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-                  <span className="text-sm font-medium text-gray-700 w-32 truncate">{media.mediaName}</span>
+              {(isEditing ? editedProject.media : project.media).map((media) => (
+                <div key={media.id} className={cn(
+                  "p-3 rounded-lg bg-gray-50",
+                  isEditing ? "space-y-2" : "flex items-center gap-3"
+                )}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium text-gray-700 w-32 truncate">{media.mediaName}</span>
+                    {isEditing ? (
+                      <SelectNative
+                        selectSize="sm"
+                        value={media.status}
+                        onChange={(e) => handleMediaChange(media.id, 'status', e.target.value)}
+                        className="flex-1"
+                      >
+                        {MEDIA_STATUSES.map(status => (
+                          <option key={status} value={status}>{status}</option>
+                        ))}
+                      </SelectNative>
+                    ) : (
+                      <Badge className={cn('text-xs', getMediaStatusColor(media.status))}>{media.status}</Badge>
+                    )}
+                  </div>
                   {isEditing ? (
-                    <select
-                      value={media.status}
-                      className={cn(
-                        'flex-1 h-8 px-2 rounded-md border text-xs',
-                        getMediaStatusColor(media.status)
-                      )}
-                      disabled // TODO: 媒体編集機能
-                    >
-                      {MEDIA_STATUSES.map(status => (
-                        <option key={status} value={status}>{status}</option>
-                      ))}
-                    </select>
+                    <div className="flex items-center gap-2 pl-[140px]">
+                      <Input
+                        type="date"
+                        value={media.startDate ? new Date(media.startDate).toISOString().split('T')[0] : ''}
+                        onChange={(e) => handleMediaChange(media.id, 'startDate', e.target.value)}
+                        className="h-8 text-xs flex-1"
+                        placeholder="開始日"
+                      />
+                      <span className="text-gray-400 text-xs">〜</span>
+                      <Input
+                        type="date"
+                        value={media.endDate ? new Date(media.endDate).toISOString().split('T')[0] : ''}
+                        onChange={(e) => handleMediaChange(media.id, 'endDate', e.target.value)}
+                        className="h-8 text-xs flex-1"
+                        placeholder="終了日"
+                      />
+                    </div>
                   ) : (
-                    <Badge className={cn('text-xs', getMediaStatusColor(media.status))}>{media.status}</Badge>
-                  )}
-                  {media.startDate && (
-                    <span className="text-xs text-gray-400">{formatDate(media.startDate)}〜</span>
+                    media.startDate && (
+                      <span className="text-xs text-gray-400">
+                        {formatDate(media.startDate)}〜{media.endDate ? formatDate(media.endDate) : ''}
+                      </span>
+                    )
                   )}
                 </div>
               ))}
