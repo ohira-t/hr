@@ -253,13 +253,11 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* チャートとアラート */}
-        <section className="grid gap-6 lg:grid-cols-2">
+        {/* チャートとアラート - PC時は3カラム1行表示 */}
+        <section className="grid gap-6 lg:grid-cols-3">
           <HiringChart data={chartData} />
-          <div className="grid gap-6">
-            <UrgentProjects projects={urgentProjects} />
-            <SlowProjects projects={slowProjects} />
-          </div>
+          <UrgentProjects projects={urgentProjects} />
+          <SlowProjects projects={slowProjects} />
         </section>
 
         {/* 分析カード */}
