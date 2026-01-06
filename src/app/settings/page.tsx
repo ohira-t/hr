@@ -199,7 +199,7 @@ export default function SettingsPage() {
         {/* App Info */}
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-400">
-            Talent Flow v1.0.0 · HR部業務管理システム
+            採用管理システム v1.0.0 · HR部
           </p>
         </div>
       </div>

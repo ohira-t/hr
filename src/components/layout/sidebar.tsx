@@ -62,14 +62,14 @@ export function Sidebar() {
       <div className="flex h-full flex-col">
         {/* Logo */}
         <div className="flex h-16 items-center gap-3 border-b border-gray-200/60 px-6">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30">
-            <span className="text-lg font-bold text-white">T</span>
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30">
+            <span className="text-base font-bold text-white tracking-tight">HR</span>
           </div>
           <div>
             <h1 className="text-lg font-semibold tracking-tight text-gray-900">
-              Talent Flow
+              採用管理システム
             </h1>
-            <p className="text-[11px] font-medium text-gray-500">HR管理システム</p>
+            <p className="text-[11px] font-medium text-gray-500">HR部</p>
           </div>
         </div>
 

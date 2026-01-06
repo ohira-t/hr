@@ -3,7 +3,7 @@ import "./globals.css";
 import { Sidebar } from "@/components/layout/sidebar";
 
 export const metadata: Metadata = {
-  title: "Talent Flow - HR管理システム",
+  title: "採用管理システム - HR部",
   description: "福祉事業の採用業務を効率的に管理するシステム",
 };
 
