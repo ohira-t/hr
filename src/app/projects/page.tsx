@@ -8,7 +8,7 @@ import { Header } from '@/components/layout/header';
 import { FilterBar } from '@/components/projects/filter-bar';
 import { ProjectTable } from '@/components/projects/project-table';
 import { Button } from '@/components/ui/button';
-import type { Category, Segment, ProjectStatus, MediaName, Position, EmploymentType, Project, MediaManagement, Department } from '@/types/database';
+import type { Category, Segment, ProjectStatus, MediaName, Position, EmploymentType, Project, MediaManagement, Department, TargetPeriod } from '@/types/database';
 import { CATEGORIES, SEGMENTS, MEDIA_NAMES } from '@/types/database';
 
 // APIレスポンスの型
@@ -31,6 +31,7 @@ interface ApiProject {
   status: string;
   assignee: string;
   department: string;
+  targetPeriod: string | null;
   handoverDate: string | null;
   deadlineDate: string | null;
   openingDate: string | null;
@@ -86,6 +87,7 @@ function convertApiToProject(api: ApiProject): Project {
     status: api.status as ProjectStatus,
     assignee: api.assignee,
     department: api.department as Department,
+    targetPeriod: api.targetPeriod as TargetPeriod | null,
     handoverDate: api.handoverDate ? new Date(api.handoverDate) : null,
     deadlineDate: api.deadlineDate ? new Date(api.deadlineDate) : null,
     openingDate: api.openingDate,

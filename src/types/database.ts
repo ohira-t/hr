@@ -38,6 +38,13 @@ export type Position =
 // 勤務形態
 export type EmploymentType = '正社員' | 'パート' | '契約職員' | '要確認';
 
+// ターゲット期（KPI管理用）
+export type TargetPeriod = 
+  | '17期下半期'   // 2026年1月〜2026年6月
+  | '18期上半期'   // 2026年7月〜2026年12月
+  | '18期下半期'   // 2027年1月〜2027年6月
+  | '19期上半期';  // 2027年7月〜2027年12月
+
 // 媒体名
 export type MediaName =
   | 'ジョブメドレー'
@@ -118,6 +125,7 @@ export interface Project {
   status: ProjectStatus;      // ステータス
   assignee: string;           // 担当者
   department: Department;     // 管轄部署
+  targetPeriod: TargetPeriod | null;  // ターゲット期
   handoverDate: Date | null;  // 引継日
   deadlineDate: Date | null;  // 期限（採用期日）
   openingDate: string | null; // 開業日（文字列）
@@ -223,6 +231,7 @@ export interface ProjectFormData {
   status: ProjectStatus;
   assignee: string;
   department: Department;
+  targetPeriod: TargetPeriod | '';  // フォームでは空文字も許容
   handoverDate: string;  // フォームではstring
   deadlineDate: string;
   openingDate: string;
@@ -259,6 +268,10 @@ export const PROJECT_STATUSES: ProjectStatus[] = [
   '不要',
 ];
 export const DEPARTMENTS: Department[] = ['推進部', 'SV部', 'その他', '要確認'];
+export const TARGET_PERIODS: TargetPeriod[] = ['17期下半期', '18期上半期', '18期下半期', '19期上半期'];
+
+// 現在のターゲット期（ダッシュボード表示用）
+export const CURRENT_TARGET_PERIOD: TargetPeriod = '17期下半期';
 export const POSITIONS: Position[] = ['サビ管', '管理者', '支援員', 'サ管兼務', '世話人', '夜間支援員', '看護師', '看・管理者', 'その他'];
 export const EMPLOYMENT_TYPES: EmploymentType[] = ['正社員', 'パート', '契約職員', '要確認'];
 export const MEDIA_NAMES: MediaName[] = [

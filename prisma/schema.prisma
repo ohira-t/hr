@@ -47,6 +47,7 @@ model Project {
   status             String            @default("採用活動中")
   assignee           String            @default("")
   department         String            @default("推進部")
+  targetPeriod       String?                               // ターゲット期（例: "17期下半期"）
   handoverDate       DateTime?
   deadlineDate       DateTime?
   openingDate        String?

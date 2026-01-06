@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { ProjectDetailClient } from './project-detail-client';
-import type { Project, MediaManagement, MediaName, Segment, Category, Position, EmploymentType, ProjectStatus, Department } from '@/types/database';
+import type { Project, MediaManagement, MediaName, Segment, Category, Position, EmploymentType, ProjectStatus, Department, TargetPeriod } from '@/types/database';
 import { MEDIA_NAMES } from '@/types/database';
 
 // 動的レンダリングを強制
@@ -60,6 +60,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     status: dbProject.status as ProjectStatus,
     assignee: dbProject.assignee,
     department: dbProject.department as Department,
+    targetPeriod: dbProject.targetPeriod as TargetPeriod | null,
     handoverDate: dbProject.handoverDate,
     deadlineDate: dbProject.deadlineDate,
     openingDate: dbProject.openingDate,

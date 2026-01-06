@@ -22,6 +22,7 @@ import {
   EMPLOYMENT_TYPES,
   PREFECTURES,
   MEDIA_STATUSES,
+  TARGET_PERIODS,
   type Project,
 } from '@/types/database';
 import { getActiveAssignees } from '@/data/master-data';
@@ -411,7 +412,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-4 gap-4">
               <div className="p-3 rounded-lg bg-gray-50">
                 <span className="text-xs text-gray-500 block mb-1">ステータス</span>
                 {isEditing ? (
@@ -455,6 +456,22 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
                   </SelectNative>
                 ) : (
                   <span className="text-sm text-gray-900">{project.department}</span>
+                )}
+              </div>
+              <div className="p-3 rounded-lg bg-indigo-50">
+                <span className="text-xs text-indigo-600 block mb-1">ターゲット期</span>
+                {isEditing ? (
+                  <SelectNative
+                    selectSize="sm"
+                    value={editedProject?.targetPeriod || ''}
+                    onChange={(e) => handleChange('targetPeriod', e.target.value || null)}
+                    className="w-full"
+                  >
+                    <option value="">未設定</option>
+                    {TARGET_PERIODS.map(period => <option key={period} value={period}>{period}</option>)}
+                  </SelectNative>
+                ) : (
+                  <span className="text-sm font-medium text-indigo-900">{project.targetPeriod || '未設定'}</span>
                 )}
               </div>
               <div className="p-3 rounded-lg bg-gray-50">

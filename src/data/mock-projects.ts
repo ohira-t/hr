@@ -1,5 +1,8 @@
-import type { Project, MediaManagement, MediaName, MediaStatus, Category, Segment, ProjectStatus, Department, EmploymentType } from '@/types/database';
+import type { Project, MediaManagement, MediaName, MediaStatus, Category, Segment, ProjectStatus, Department, EmploymentType, TargetPeriod } from '@/types/database';
 import { MEDIA_NAMES } from '@/types/database';
+
+// targetPeriodを除いたProject型（内部使用）
+type ProjectWithoutTargetPeriod = Omit<Project, 'targetPeriod'>;
 
 // 媒体ステータスのマッピング
 function mapMediaStatus(status: string): MediaStatus {
@@ -12,8 +15,8 @@ function mapMediaStatus(status: string): MediaStatus {
   return '未掲載';
 }
 
-// モックプロジェクトデータ
-export const mockProjects: Project[] = [
+// モックプロジェクトデータ（内部用）
+const _mockProjectsData: ProjectWithoutTargetPeriod[] = [
   // 就労 - 新規
   {
     id: '1',
@@ -368,6 +371,12 @@ export const mockProjects: Project[] = [
   },
 ];
 
+// targetPeriodを追加してエクスポート（採用活動中のものは17期下半期、それ以外はnull）
+export const mockProjects: Project[] = _mockProjectsData.map(p => ({
+  ...p,
+  targetPeriod: (p.status === '採用活動中' ? '17期下半期' : null) as TargetPeriod | null,
+}));
+
 function createMediaList(projectId: string, statuses: string[]): MediaManagement[] {
   return MEDIA_NAMES.map((name, index) => ({
     id: `${projectId}-media-${index}`,
@@ -505,6 +514,7 @@ export function createDefaultProject(hrId: string): Project {
     status: '採用活動中',
     assignee: '',
     department: '推進部',
+    targetPeriod: '17期下半期',  // 新規作成時は今期をデフォルト設定
     handoverDate: null,
     deadlineDate: null,
     openingDate: null,

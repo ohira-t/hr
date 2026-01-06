@@ -50,6 +50,7 @@ export default function NewProjectPage() {
     status: '採用活動中',
     assignee: '',
     department: '推進部',
+    targetPeriod: '17期下半期',
     handoverDate: '',
     deadlineDate: '',
     openingDate: '',
