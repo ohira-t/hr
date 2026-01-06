@@ -89,14 +89,14 @@ export function Sidebar() {
                 className={cn(
                   'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200',
                   isActive
-                    ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/20'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-indigo-50 text-indigo-700 shadow-sm'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 )}
               >
                 <item.icon 
                   className={cn(
                     'h-5 w-5 transition-colors',
-                    isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'
+                    isActive ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-600'
                   )} 
                 />
                 {item.name}

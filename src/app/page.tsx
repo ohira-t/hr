@@ -52,9 +52,9 @@ export default function DashboardPage() {
       <div className="p-6 lg:p-8">
         {/* Quick Stats */}
         <div className="mb-6 lg:mb-8 grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-          <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 p-4 lg:p-6 text-white opacity-0 animate-fade-in">
-            <p className="text-[10px] lg:text-xs font-medium text-gray-400 uppercase tracking-wider whitespace-nowrap">アクティブ案件</p>
-            <p className="mt-1 lg:mt-2 text-2xl lg:text-3xl font-bold">{totalActive}<span className="text-sm lg:text-base font-normal text-gray-400 ml-1">件</span></p>
+          <div className="rounded-2xl bg-white border border-gray-200/60 p-4 lg:p-6 opacity-0 animate-fade-in card-shadow">
+            <p className="text-[10px] lg:text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">アクティブ案件</p>
+            <p className="mt-1 lg:mt-2 text-2xl lg:text-3xl font-bold text-gray-900">{totalActive}<span className="text-sm lg:text-base font-normal text-gray-500 ml-1">件</span></p>
           </div>
           <div className="rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 p-4 lg:p-6 text-white opacity-0 animate-fade-in stagger-1">
             <p className="text-[10px] lg:text-xs font-medium text-emerald-100 uppercase tracking-wider whitespace-nowrap">採用目標</p>
