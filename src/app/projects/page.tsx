@@ -26,7 +26,7 @@ export default function ProjectsPage() {
     setSearchQuery('');
     setCategoryFilter('all');
     setSegmentFilter('all');
-    setStatusFilter('all');
+    setStatusFilter('採用活動中');
     setAssigneeFilter('all');
     setMediaFilter([]);
     setSortBy('deadline');
