@@ -75,12 +75,14 @@ export function HiringChart({ data }: HiringChartProps) {
                 fill="#f59e0b" 
                 radius={[4, 4, 0, 0]}
                 maxBarSize={40}
+                name="新規"
               />
               <Bar 
                 dataKey="既存" 
-                fill="#6366f1" 
+                fill="#64748b" 
                 radius={[4, 4, 0, 0]}
                 maxBarSize={40}
+                name="既存"
               />
             </BarChart>
           </ResponsiveContainer>

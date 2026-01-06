@@ -229,14 +229,17 @@ export function Sidebar() {
           })}
         </nav>
 
-        {/* Collapse Button */}
+        {/* Collapse/Expand Button */}
         <div className="border-t border-gray-200/60 p-3">
           <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             className={cn(
-              'flex items-center rounded-xl text-sm font-medium text-gray-500 transition-all duration-200 hover:bg-gray-100 hover:text-gray-700 w-full',
-              isSidebarCollapsed ? 'justify-center p-3' : 'gap-3 px-3 py-2.5'
+              'flex items-center rounded-xl text-sm font-medium transition-all duration-200 w-full',
+              isSidebarCollapsed 
+                ? 'justify-center p-3 bg-indigo-50 text-indigo-600 hover:bg-indigo-100' 
+                : 'gap-3 px-3 py-2.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700'
             )}
+            title={isSidebarCollapsed ? 'メニューを展開' : 'メニューを折りたたむ'}
           >
             {isSidebarCollapsed ? (
               <ChevronRight className="h-5 w-5" />
