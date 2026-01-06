@@ -121,10 +121,10 @@ export default function NewProjectPage() {
         }
       />
       
-      <form onSubmit={handleSubmit} className="p-8 space-y-6 max-w-5xl mx-auto">
+      <form onSubmit={handleSubmit} className="p-8 space-y-8 max-w-5xl mx-auto">
         {/* 案件情報 */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-3">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100">
                 <FileText className="h-4 w-4 text-gray-600" />
@@ -170,7 +170,7 @@ export default function NewProjectPage() {
 
         {/* クライアント情報 */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-3">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
                 <Building2 className="h-4 w-4 text-blue-600" />
@@ -221,7 +221,7 @@ export default function NewProjectPage() {
 
         {/* 勤務地 */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-3">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100">
                 <MapPin className="h-4 w-4 text-emerald-600" />
@@ -266,7 +266,7 @@ export default function NewProjectPage() {
 
         {/* 募集内容 */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-3">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100">
                 <Users className="h-4 w-4 text-purple-600" />
@@ -322,7 +322,7 @@ export default function NewProjectPage() {
 
         {/* 社内管理 */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-3">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100">
                 <Briefcase className="h-4 w-4 text-amber-600" />
@@ -402,7 +402,7 @@ export default function NewProjectPage() {
 
         {/* 採用媒体 */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-3">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-100">
                 <Newspaper className="h-4 w-4 text-indigo-600" />
@@ -445,7 +445,7 @@ export default function NewProjectPage() {
 
         {/* メモ */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-3">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-pink-100">
                 <FileText className="h-4 w-4 text-pink-600" />

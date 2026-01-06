@@ -110,7 +110,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
         }
       />
       
-      <div className="p-8 space-y-6 max-w-5xl mx-auto">
+      <div className="p-8 space-y-8 max-w-5xl mx-auto">
         {/* ステータスサマリー */}
         <div className="flex items-center gap-4 p-4 rounded-2xl bg-white card-shadow">
           <div className="flex items-center gap-3">
@@ -147,10 +147,10 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
         </div>
 
         {/* 案件情報 & クライアント情報 */}
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-8">
           {/* 案件情報 */}
           <Card className="card-shadow border-0">
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm font-semibold">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100">
                   <FileText className="h-4 w-4 text-gray-600" />
@@ -198,7 +198,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
           {/* クライアント情報 */}
           <Card className="card-shadow border-0">
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm font-semibold">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
                   <Building2 className="h-4 w-4 text-blue-600" />
@@ -244,10 +244,10 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
         </div>
 
         {/* 勤務地 & 募集内容 */}
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-8">
           {/* 勤務地 */}
           <Card className="card-shadow border-0">
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm font-semibold">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100">
                   <MapPin className="h-4 w-4 text-emerald-600" />
@@ -300,7 +300,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
           {/* 募集内容 */}
           <Card className="card-shadow border-0">
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm font-semibold">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100">
                   <Users className="h-4 w-4 text-purple-600" />
@@ -369,7 +369,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
         {/* 社内管理 */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-3">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100">
                 <Briefcase className="h-4 w-4 text-amber-600" />
@@ -469,7 +469,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
         {/* 採用媒体 */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-3">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-100">
                 <Newspaper className="h-4 w-4 text-indigo-600" />
@@ -509,7 +509,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
         {/* メモ */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-3">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-pink-100">
                 <FileText className="h-4 w-4 text-pink-600" />
