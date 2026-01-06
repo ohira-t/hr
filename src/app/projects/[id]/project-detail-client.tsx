@@ -87,22 +87,22 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
                 </Button>
                 <Button 
                   size="sm" 
-                  className="h-9 gap-1.5 rounded-full bg-gray-900 text-white hover:bg-gray-800"
+                  className="h-9 gap-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 px-4"
                   onClick={handleSave}
                   disabled={isSubmitting}
                 >
-                  <Save className="h-4 w-4" />
-                  {isSubmitting ? '保存中...' : '保存'}
+                  <Save className="h-[18px] w-[18px]" />
+                  <span className="leading-none">{isSubmitting ? '保存中...' : '保存'}</span>
                 </Button>
               </>
             ) : (
               <Button 
                 size="sm" 
-                className="h-9 gap-1.5 rounded-full bg-gray-900 text-white hover:bg-gray-800"
+                className="h-9 gap-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 px-4"
                 onClick={() => setIsEditing(true)}
               >
-                <Edit2 className="h-4 w-4" />
-                編集
+                <Edit2 className="h-[18px] w-[18px]" />
+                <span className="leading-none">編集</span>
               </Button>
             )}
           </div>
@@ -149,7 +149,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
         <div className="grid grid-cols-2 gap-6">
           {/* 案件情報 */}
           <Card className="card-shadow border-0">
-            <CardHeader className="pb-4">
+            <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-sm font-semibold">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100">
                   <FileText className="h-4 w-4 text-gray-600" />
@@ -195,7 +195,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
           {/* クライアント情報 */}
           <Card className="card-shadow border-0">
-            <CardHeader className="pb-4">
+            <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-sm font-semibold">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
                   <Building2 className="h-4 w-4 text-blue-600" />
@@ -244,7 +244,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
         <div className="grid grid-cols-2 gap-6">
           {/* 勤務地 */}
           <Card className="card-shadow border-0">
-            <CardHeader className="pb-4">
+            <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-sm font-semibold">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100">
                   <MapPin className="h-4 w-4 text-emerald-600" />
@@ -296,7 +296,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
           {/* 募集内容 */}
           <Card className="card-shadow border-0">
-            <CardHeader className="pb-4">
+            <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-sm font-semibold">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100">
                   <Users className="h-4 w-4 text-purple-600" />
@@ -363,7 +363,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
         {/* 社内管理 */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-4">
+          <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100">
                 <Briefcase className="h-4 w-4 text-amber-600" />
@@ -460,7 +460,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
         {/* 採用媒体 */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-4">
+          <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-100">
                 <Newspaper className="h-4 w-4 text-indigo-600" />
@@ -500,7 +500,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
         {/* メモ */}
         <Card className="card-shadow border-0">
-          <CardHeader className="pb-4">
+          <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-pink-100">
                 <FileText className="h-4 w-4 text-pink-600" />

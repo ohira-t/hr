@@ -48,9 +48,9 @@ export default function ProjectsPage() {
         showSearch={true}
         actions={
           <Link href="/projects/new">
-            <Button size="sm" className="h-9 gap-1.5 rounded-full bg-gray-900 text-white hover:bg-gray-800">
-              <Plus className="h-4 w-4" />
-              新規登録
+            <Button size="sm" className="h-9 gap-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 px-4">
+              <Plus className="h-[18px] w-[18px]" />
+              <span className="leading-none">新規登録</span>
             </Button>
           </Link>
         }
