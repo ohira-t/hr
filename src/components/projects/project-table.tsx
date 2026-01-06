@@ -170,54 +170,59 @@ export function ProjectTable({
     columnHelper.accessor('prefecture', {
       header: 'エリア',
       cell: (info) => (
-        <span className="text-[13px] text-gray-900 whitespace-nowrap">
-          {info.getValue()}{info.row.original.city ? ` ${info.row.original.city}` : ''}
-        </span>
+        <div className="min-w-[100px]">
+          <p className="text-[13px] text-gray-900">{info.getValue()}</p>
+          {info.row.original.city && (
+            <p className="text-[12px] text-gray-500">{info.row.original.city}</p>
+          )}
+        </div>
       ),
-      size: 160,
+      size: 120,
     }),
     columnHelper.accessor('handoverDate', {
-      header: '経過日数',
+      header: '経過',
       cell: (info) => {
         const dateInfo = calculateDateInfo(info.getValue(), info.row.original.deadlineDate);
         return (
-          <div className="flex items-center gap-2 whitespace-nowrap">
-            {dateInfo.isSlow && (
-              <Badge className="bg-amber-100 text-amber-700 border-0 text-[10px] px-1.5 py-0">
-                Slow
-              </Badge>
-            )}
-            <span className={cn(
+          <div className="min-w-[80px]">
+            <div className="flex items-center gap-1.5">
+              {dateInfo.isSlow && (
+                <Badge className="bg-amber-100 text-amber-700 border-0 text-[10px] px-1.5 py-0">
+                  Slow
+                </Badge>
+              )}
+            </div>
+            <p className={cn(
               'text-[13px]',
               dateInfo.isSlow ? 'text-amber-600 font-medium' : 'text-gray-600'
             )}>
               {formatElapsedDays(dateInfo.elapsedDays)}
-            </span>
+            </p>
           </div>
         );
       },
-      size: 120,
+      size: 100,
     }),
     columnHelper.accessor('deadlineDate', {
       header: '期限',
       cell: (info) => {
         const dateInfo = calculateDateInfo(info.row.original.handoverDate, info.getValue());
         return (
-          <div className="whitespace-nowrap">
-            <span className={cn(
+          <div className="min-w-[90px]">
+            <p className={cn(
               'text-[13px] font-medium',
               dateInfo.isOverdue ? 'text-red-600' :
               dateInfo.isUrgent ? 'text-amber-600' : 'text-gray-600'
             )}>
               {formatRemainingDays(dateInfo.remainingDays)}
-            </span>
-            <span className="text-[12px] text-gray-400 ml-2">
-              {info.getValue() ? formatDate(info.getValue()) : ''}
-            </span>
+            </p>
+            <p className="text-[12px] text-gray-400">
+              {info.getValue() ? formatDate(info.getValue()) : '—'}
+            </p>
           </div>
         );
       },
-      size: 160,
+      size: 110,
     }),
     columnHelper.accessor('media', {
       header: '掲載媒体',
@@ -285,7 +290,7 @@ export function ProjectTable({
   return (
     <div className="overflow-hidden rounded-2xl bg-white card-shadow">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1600px]">
+        <table className="w-full min-w-[1500px]">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-gray-200/80 bg-gray-50/50">
