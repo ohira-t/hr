@@ -33,11 +33,11 @@ const mediaConfig: Record<MediaName, { short: string; activeColor: string }> = {
 function getStatusStyle(status: MediaStatus): { isActive: boolean; style: string } {
   switch (status) {
     case '募集中':
-      return { isActive: true, style: 'ring-2 ring-offset-1' };
+      return { isActive: true, style: '' };
     case '準備中':
-      return { isActive: true, style: 'ring-1 ring-amber-400' };
+      return { isActive: true, style: 'opacity-70' };
     case '審査・同期中':
-      return { isActive: true, style: 'ring-1 ring-blue-400' };
+      return { isActive: true, style: 'opacity-80' };
     case '一時停止':
       return { isActive: false, style: 'opacity-40' };
     case '終了':
