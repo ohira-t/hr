@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -10,21 +11,31 @@ import {
   Building2,
   Briefcase,
   Stethoscope,
-  RefreshCcw
+  RefreshCcw,
+  ChevronDown,
+  X,
+  Check,
+  User,
+  Newspaper
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { Category, Segment, ProjectStatus } from '@/types/database';
+import type { Category, Segment, ProjectStatus, MediaName } from '@/types/database';
 
 interface FilterBarProps {
   categoryFilter: Category | 'all';
   segmentFilter: Segment | 'all';
   statusFilter: ProjectStatus | 'all';
+  assigneeFilter: string | 'all';
+  mediaFilter: MediaName[];
   sortBy: 'deadline' | 'elapsed' | 'updated' | 'client';
   onCategoryChange: (category: Category | 'all') => void;
   onSegmentChange: (segment: Segment | 'all') => void;
   onStatusChange: (status: ProjectStatus | 'all') => void;
+  onAssigneeChange: (assignee: string | 'all') => void;
+  onMediaChange: (media: MediaName[]) => void;
   onSortChange: (sort: 'deadline' | 'elapsed' | 'updated' | 'client') => void;
   onReset: () => void;
+  assignees: string[];
 }
 
 const categories: { value: Category | 'all'; label: string; icon?: React.ElementType; color?: string }[] = [
@@ -41,10 +52,24 @@ const segments: { value: Segment | 'all'; label: string }[] = [
 ];
 
 const statuses: { value: ProjectStatus | 'all'; label: string }[] = [
-  { value: 'all', label: '全ステータス' },
+  { value: 'all', label: '全て' },
   { value: '採用活動中', label: '採用活動中' },
   { value: '対応完了', label: '対応完了' },
   { value: '保留', label: '保留' },
+];
+
+const mediaOptions: MediaName[] = [
+  'ジョブメドレー',
+  'ウェルミージョブ',
+  'ハローワーク',
+  'エントリーポケット',
+  '人材紹介',
+  'リファラル',
+  'リジョブ',
+  'indeed Plus',
+  'engage',
+  'バイトル',
+  'キャリアジョブズ',
 ];
 
 const sortOptions: { value: 'deadline' | 'elapsed' | 'updated' | 'client'; label: string; icon: React.ElementType }[] = [
@@ -58,132 +83,297 @@ export function FilterBar({
   categoryFilter,
   segmentFilter,
   statusFilter,
+  assigneeFilter,
+  mediaFilter,
   sortBy,
   onCategoryChange,
   onSegmentChange,
   onStatusChange,
+  onAssigneeChange,
+  onMediaChange,
   onSortChange,
   onReset,
+  assignees,
 }: FilterBarProps) {
+  const [showFilterPopover, setShowFilterPopover] = useState(false);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // Click outside to close popover
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
+        setShowFilterPopover(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const hasActiveFilters = 
     categoryFilter !== 'all' || 
     segmentFilter !== 'all' || 
-    statusFilter !== 'all';
+    statusFilter !== 'all' ||
+    assigneeFilter !== 'all' ||
+    mediaFilter.length > 0;
+
+  const detailFilterCount = 
+    (statusFilter !== 'all' ? 1 : 0) +
+    (assigneeFilter !== 'all' ? 1 : 0) +
+    (mediaFilter.length > 0 ? 1 : 0);
+
+  const toggleMedia = (media: MediaName) => {
+    if (mediaFilter.includes(media)) {
+      onMediaChange(mediaFilter.filter(m => m !== media));
+    } else {
+      onMediaChange([...mediaFilter, media]);
+    }
+  };
 
   return (
-    <div className="rounded-2xl bg-white p-4 card-shadow">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          {/* Filter Icon */}
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100">
-            <Filter className="h-4 w-4 text-gray-600" />
-          </div>
-
-          {/* Category Filter */}
-          <div className="flex items-center gap-1.5">
-            {categories.map((cat) => (
-              <Button
-                key={cat.value}
-                variant="ghost"
-                size="sm"
-                onClick={() => onCategoryChange(cat.value)}
+    <div className="space-y-3">
+      {/* Main Filter Bar */}
+      <div className="rounded-2xl bg-white p-4 card-shadow">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            {/* Filter Icon with Popover */}
+            <div className="relative" ref={popoverRef}>
+              <button
+                onClick={() => setShowFilterPopover(!showFilterPopover)}
                 className={cn(
-                  'h-8 gap-1.5 rounded-lg px-3 text-xs font-medium transition-all',
-                  categoryFilter === cat.value
-                    ? 'bg-gray-900 text-white hover:bg-gray-800 hover:text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
+                  'flex h-9 w-9 items-center justify-center rounded-xl transition-colors',
+                  showFilterPopover || detailFilterCount > 0
+                    ? 'bg-indigo-100 text-indigo-600'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 )}
               >
-                {cat.icon && <cat.icon className={cn('h-3.5 w-3.5', categoryFilter !== cat.value && cat.color)} />}
-                {cat.label}
-              </Button>
-            ))}
+                <Filter className="h-4 w-4" />
+                {detailFilterCount > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-medium text-white">
+                    {detailFilterCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Filter Popover */}
+              {showFilterPopover && (
+                <div className="absolute left-0 top-full z-50 mt-2 w-80 rounded-xl bg-white p-4 shadow-xl border border-gray-100 animate-fade-in">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-semibold text-gray-900">詳細フィルタ</h3>
+                    <button
+                      onClick={() => setShowFilterPopover(false)}
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  {/* Assignee Filter */}
+                  <div className="mb-4">
+                    <label className="flex items-center gap-2 text-xs font-medium text-gray-500 mb-2">
+                      <User className="h-3.5 w-3.5" />
+                      担当者
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      <button
+                        onClick={() => onAssigneeChange('all')}
+                        className={cn(
+                          'px-2.5 py-1 rounded-lg text-xs font-medium transition-colors',
+                          assigneeFilter === 'all'
+                            ? 'bg-gray-900 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        )}
+                      >
+                        全員
+                      </button>
+                      {assignees.map((assignee) => (
+                        <button
+                          key={assignee}
+                          onClick={() => onAssigneeChange(assignee)}
+                          className={cn(
+                            'px-2.5 py-1 rounded-lg text-xs font-medium transition-colors',
+                            assigneeFilter === assignee
+                              ? 'bg-gray-900 text-white'
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          )}
+                        >
+                          {assignee}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Status Filter */}
+                  <div className="mb-4">
+                    <label className="flex items-center gap-2 text-xs font-medium text-gray-500 mb-2">
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                      ステータス
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {statuses.map((status) => (
+                        <button
+                          key={status.value}
+                          onClick={() => onStatusChange(status.value)}
+                          className={cn(
+                            'px-2.5 py-1 rounded-lg text-xs font-medium transition-colors',
+                            statusFilter === status.value
+                              ? 'bg-gray-900 text-white'
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          )}
+                        >
+                          {status.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Media Filter */}
+                  <div>
+                    <label className="flex items-center gap-2 text-xs font-medium text-gray-500 mb-2">
+                      <Newspaper className="h-3.5 w-3.5" />
+                      媒体（複数選択可）
+                    </label>
+                    <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
+                      {mediaOptions.map((media) => (
+                        <button
+                          key={media}
+                          onClick={() => toggleMedia(media)}
+                          className={cn(
+                            'flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-colors',
+                            mediaFilter.includes(media)
+                              ? 'bg-indigo-100 text-indigo-700'
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          )}
+                        >
+                          {mediaFilter.includes(media) && <Check className="h-3 w-3" />}
+                          {media}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Category Filter */}
+            <div className="flex items-center gap-1.5">
+              {categories.map((cat) => (
+                <Button
+                  key={cat.value}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onCategoryChange(cat.value)}
+                  className={cn(
+                    'h-8 gap-1.5 rounded-lg px-3 text-xs font-medium transition-all',
+                    categoryFilter === cat.value
+                      ? 'bg-gray-900 text-white hover:bg-gray-800 hover:text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  )}
+                >
+                  {cat.icon && <cat.icon className={cn('h-3.5 w-3.5', categoryFilter !== cat.value && cat.color)} />}
+                  {cat.label}
+                </Button>
+              ))}
+            </div>
+
+            <div className="h-6 w-px bg-gray-200" />
+
+            {/* Segment Filter */}
+            <div className="flex items-center gap-1.5">
+              {segments.map((seg) => (
+                <Button
+                  key={seg.value}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onSegmentChange(seg.value)}
+                  className={cn(
+                    'h-8 rounded-lg px-3 text-xs font-medium transition-all',
+                    segmentFilter === seg.value
+                      ? 'bg-gray-900 text-white hover:bg-gray-800 hover:text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  )}
+                >
+                  {seg.label}
+                </Button>
+              ))}
+            </div>
           </div>
 
-          <div className="h-6 w-px bg-gray-200" />
-
-          {/* Segment Filter */}
-          <div className="flex items-center gap-1.5">
-            {segments.map((seg) => (
+          <div className="flex items-center gap-3">
+            {/* Reset Button */}
+            {hasActiveFilters && (
               <Button
-                key={seg.value}
                 variant="ghost"
                 size="sm"
-                onClick={() => onSegmentChange(seg.value)}
-                className={cn(
-                  'h-8 rounded-lg px-3 text-xs font-medium transition-all',
-                  segmentFilter === seg.value
-                    ? 'bg-gray-900 text-white hover:bg-gray-800 hover:text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
-                )}
+                onClick={onReset}
+                className="h-8 gap-1.5 rounded-lg px-3 text-xs font-medium text-gray-500 hover:text-gray-900"
               >
-                {seg.label}
+                <RefreshCcw className="h-3.5 w-3.5" />
+                リセット
               </Button>
-            ))}
-          </div>
+            )}
 
-          <div className="h-6 w-px bg-gray-200" />
+            <div className="h-6 w-px bg-gray-200" />
 
-          {/* Status Filter */}
-          <div className="flex items-center gap-1.5">
-            {statuses.map((status) => (
-              <Button
-                key={status.value}
-                variant="ghost"
-                size="sm"
-                onClick={() => onStatusChange(status.value)}
-                className={cn(
-                  'h-8 rounded-lg px-3 text-xs font-medium transition-all',
-                  statusFilter === status.value
-                    ? 'bg-gray-900 text-white hover:bg-gray-800 hover:text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
-                )}
-              >
-                {status.label}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {/* Reset Button */}
-          {hasActiveFilters && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onReset}
-              className="h-8 gap-1.5 rounded-lg px-3 text-xs font-medium text-gray-500 hover:text-gray-900"
-            >
-              <RefreshCcw className="h-3.5 w-3.5" />
-              リセット
-            </Button>
-          )}
-
-          <div className="h-6 w-px bg-gray-200" />
-
-          {/* Sort Options */}
-          <div className="flex items-center gap-1.5">
-            {sortOptions.map((option) => (
-              <Button
-                key={option.value}
-                variant="ghost"
-                size="sm"
-                onClick={() => onSortChange(option.value)}
-                className={cn(
-                  'h-8 gap-1.5 rounded-lg px-3 text-xs font-medium transition-all',
-                  sortBy === option.value
-                    ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800'
-                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
-                )}
-              >
-                <option.icon className="h-3.5 w-3.5" />
-                {option.label}
-              </Button>
-            ))}
+            {/* Sort Options */}
+            <div className="flex items-center gap-1.5">
+              {sortOptions.map((option) => (
+                <Button
+                  key={option.value}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onSortChange(option.value)}
+                  className={cn(
+                    'h-8 gap-1.5 rounded-lg px-3 text-xs font-medium transition-all',
+                    sortBy === option.value
+                      ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800'
+                      : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                  )}
+                >
+                  <option.icon className="h-3.5 w-3.5" />
+                  {option.label}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Active Filter Chips */}
+      {(assigneeFilter !== 'all' || mediaFilter.length > 0 || statusFilter !== 'all') && (
+        <div className="flex items-center gap-2 px-1">
+          <span className="text-xs text-gray-500">適用中:</span>
+          {statusFilter !== 'all' && (
+            <Badge 
+              variant="secondary" 
+              className="gap-1 bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer"
+              onClick={() => onStatusChange('all')}
+            >
+              {statusFilter}
+              <X className="h-3 w-3" />
+            </Badge>
+          )}
+          {assigneeFilter !== 'all' && (
+            <Badge 
+              variant="secondary" 
+              className="gap-1 bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer"
+              onClick={() => onAssigneeChange('all')}
+            >
+              担当: {assigneeFilter}
+              <X className="h-3 w-3" />
+            </Badge>
+          )}
+          {mediaFilter.length > 0 && (
+            <Badge 
+              variant="secondary" 
+              className="gap-1 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 cursor-pointer"
+              onClick={() => onMediaChange([])}
+            >
+              媒体: {mediaFilter.length}件
+              <X className="h-3 w-3" />
+            </Badge>
+          )}
+        </div>
+      )}
     </div>
   );
 }
-

@@ -15,7 +15,7 @@ import { MediaMatrix } from './media-matrix';
 import { cn } from '@/lib/utils';
 import { getCategoryColor, getSegmentColor, getStatusColor } from '@/lib/category-utils';
 import { calculateDateInfo, formatElapsedDays, formatRemainingDays, formatDate } from '@/lib/date-utils';
-import type { Project, Category, Segment, ProjectStatus } from '@/types/database';
+import type { Project, Category, Segment, ProjectStatus, MediaName } from '@/types/database';
 import { ChevronDown, ChevronUp, ChevronsUpDown, ExternalLink } from 'lucide-react';
 
 interface ProjectTableProps {
@@ -23,6 +23,9 @@ interface ProjectTableProps {
   categoryFilter: Category | 'all';
   segmentFilter: Segment | 'all';
   statusFilter: ProjectStatus | 'all';
+  assigneeFilter: string | 'all';
+  mediaFilter: MediaName[];
+  searchQuery: string;
   sortBy: 'deadline' | 'elapsed' | 'updated' | 'client';
 }
 
@@ -33,6 +36,9 @@ export function ProjectTable({
   categoryFilter,
   segmentFilter,
   statusFilter,
+  assigneeFilter,
+  mediaFilter,
+  searchQuery,
   sortBy,
 }: ProjectTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -41,15 +47,41 @@ export function ProjectTable({
   const filteredProjects = useMemo(() => {
     let result = [...projects];
 
-    // フィルタリング
+    // テキスト検索
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      result = result.filter(p => 
+        p.hrId.toLowerCase().includes(query) ||
+        p.clientName.toLowerCase().includes(query) ||
+        p.prefecture.toLowerCase().includes(query) ||
+        p.city.toLowerCase().includes(query) ||
+        p.position.toLowerCase().includes(query)
+      );
+    }
+
+    // カテゴリフィルタ
     if (categoryFilter !== 'all') {
       result = result.filter(p => p.category === categoryFilter);
     }
+    // セグメントフィルタ
     if (segmentFilter !== 'all') {
       result = result.filter(p => p.segment === segmentFilter);
     }
+    // ステータスフィルタ
     if (statusFilter !== 'all') {
       result = result.filter(p => p.status === statusFilter);
+    }
+    // 担当者フィルタ
+    if (assigneeFilter !== 'all') {
+      result = result.filter(p => p.assignee === assigneeFilter);
+    }
+    // 媒体フィルタ（複数選択 - いずれかの媒体が掲載中なら表示）
+    if (mediaFilter.length > 0) {
+      result = result.filter(p => 
+        p.media.some(m => 
+          mediaFilter.includes(m.mediaName) && m.status === '掲載中'
+        )
+      );
     }
 
     // ソート
@@ -74,7 +106,7 @@ export function ProjectTable({
     });
 
     return result;
-  }, [projects, categoryFilter, segmentFilter, statusFilter, sortBy]);
+  }, [projects, categoryFilter, segmentFilter, statusFilter, assigneeFilter, mediaFilter, searchQuery, sortBy]);
 
   const columns = useMemo(() => [
     columnHelper.accessor('segment', {
@@ -218,6 +250,8 @@ export function ProjectTable({
     getFilteredRowModel: getFilteredRowModel(),
   });
 
+  const hasFilters = categoryFilter !== 'all' || segmentFilter !== 'all' || statusFilter !== 'all' || assigneeFilter !== 'all' || mediaFilter.length > 0 || searchQuery.trim();
+
   return (
     <div className="overflow-hidden rounded-2xl bg-white card-shadow">
       <div className="overflow-x-auto">
@@ -258,27 +292,35 @@ export function ProjectTable({
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map((row, index) => (
-              <tr
-                key={row.id}
-                className={cn(
-                  'border-b border-gray-50 transition-colors hover:bg-gray-50/50',
-                  'opacity-0 animate-fade-in',
-                  index < 5 && `stagger-${index + 1}`
-                )}
-                style={{ animationDelay: index >= 5 ? `${0.05 * index}s` : undefined }}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className="px-4 py-3"
-                    style={{ width: cell.column.getSize() }}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
+            {table.getRowModel().rows.length === 0 ? (
+              <tr>
+                <td colSpan={columns.length} className="px-4 py-12 text-center">
+                  <p className="text-sm text-gray-500">条件に一致する案件がありません</p>
+                </td>
               </tr>
-            ))}
+            ) : (
+              table.getRowModel().rows.map((row, index) => (
+                <tr
+                  key={row.id}
+                  className={cn(
+                    'border-b border-gray-50 transition-colors hover:bg-gray-50/50',
+                    'opacity-0 animate-fade-in',
+                    index < 5 && `stagger-${index + 1}`
+                  )}
+                  style={{ animationDelay: index >= 5 ? `${0.05 * index}s` : undefined }}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      key={cell.id}
+                      className="px-4 py-3"
+                      style={{ width: cell.column.getSize() }}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -287,7 +329,7 @@ export function ProjectTable({
       <div className="border-t border-gray-100 bg-gray-50/50 px-4 py-3">
         <p className="text-sm text-gray-500">
           {filteredProjects.length}件の案件を表示中
-          {(categoryFilter !== 'all' || segmentFilter !== 'all' || statusFilter !== 'all') && (
+          {hasFilters && (
             <span className="ml-2 text-gray-400">
               (フィルター適用中)
             </span>
@@ -297,4 +339,3 @@ export function ProjectTable({
     </div>
   );
 }
-
