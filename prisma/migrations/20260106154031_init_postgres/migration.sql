@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "Project" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "hrId" TEXT NOT NULL,
     "segment" TEXT NOT NULL,
     "category" TEXT NOT NULL,
@@ -18,34 +18,39 @@ CREATE TABLE "Project" (
     "status" TEXT NOT NULL DEFAULT '採用活動中',
     "assignee" TEXT NOT NULL DEFAULT '',
     "department" TEXT NOT NULL DEFAULT '推進部',
-    "handoverDate" DATETIME,
-    "deadlineDate" DATETIME,
+    "handoverDate" TIMESTAMP(3),
+    "deadlineDate" TIMESTAMP(3),
     "openingDate" TEXT,
     "hurdles" TEXT NOT NULL DEFAULT '',
     "notes" TEXT NOT NULL DEFAULT '',
     "nextAction" TEXT NOT NULL DEFAULT '',
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "lastUpdated" DATETIME NOT NULL
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "lastUpdated" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Project_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "MediaManagement" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "projectId" TEXT NOT NULL,
     "mediaName" TEXT NOT NULL,
     "status" TEXT NOT NULL DEFAULT '未掲載',
-    "startDate" DATETIME,
-    "endDate" DATETIME,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "MediaManagement_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "startDate" TIMESTAMP(3),
+    "endDate" TIMESTAMP(3),
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "MediaManagement_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Assignee" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "order" INTEGER NOT NULL DEFAULT 0
+    "order" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "Assignee_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -56,3 +61,6 @@ CREATE UNIQUE INDEX "MediaManagement_projectId_mediaName_key" ON "MediaManagemen
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Assignee_name_key" ON "Assignee"("name");
+
+-- AddForeignKey
+ALTER TABLE "MediaManagement" ADD CONSTRAINT "MediaManagement_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
