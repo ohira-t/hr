@@ -1,9 +1,12 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
+import { Plus } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import { FilterBar } from '@/components/projects/filter-bar';
 import { ProjectTable } from '@/components/projects/project-table';
+import { Button } from '@/components/ui/button';
 import { mockProjects } from '@/data/mock-projects';
 import type { Category, Segment, ProjectStatus, MediaName } from '@/types/database';
 
@@ -43,6 +46,14 @@ export default function ProjectsPage() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         showSearch={true}
+        actions={
+          <Link href="/projects/new">
+            <Button size="sm" className="h-9 gap-1.5 rounded-full bg-gray-900 text-white hover:bg-gray-800">
+              <Plus className="h-4 w-4" />
+              新規登録
+            </Button>
+          </Link>
+        }
       />
       
       <div className="p-8 space-y-6">

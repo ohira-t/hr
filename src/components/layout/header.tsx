@@ -2,6 +2,7 @@
 
 import { Bell, Search, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ReactNode } from 'react';
 
 interface HeaderProps {
   title: string;
@@ -9,9 +10,10 @@ interface HeaderProps {
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
   showSearch?: boolean;
+  actions?: ReactNode;
 }
 
-export function Header({ title, subtitle, searchQuery = '', onSearchChange, showSearch = true }: HeaderProps) {
+export function Header({ title, subtitle, searchQuery = '', onSearchChange, showSearch = true, actions }: HeaderProps) {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200/60 bg-white/80 px-8 glass-effect">
       <div>
@@ -43,6 +45,9 @@ export function Header({ title, subtitle, searchQuery = '', onSearchChange, show
             )}
           </div>
         )}
+
+        {/* Custom Actions */}
+        {actions}
 
         {/* Notifications */}
         <Button 

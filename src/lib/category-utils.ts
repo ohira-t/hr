@@ -86,6 +86,10 @@ export function getCategoryColor(category: Category): string {
       return 'bg-blue-100 text-blue-800 border-blue-200';
     case '看護':
       return 'bg-purple-100 text-purple-800 border-purple-200';
+    case '兼務':
+      return 'bg-orange-100 text-orange-800 border-orange-200';
+    case '要確認':
+      return 'bg-red-100 text-red-800 border-red-200';
     default:
       return 'bg-gray-100 text-gray-800 border-gray-200';
   }
@@ -134,8 +138,33 @@ export function getCategoryLabel(category: Category): string {
       return 'グループホーム';
     case '看護':
       return '訪問看護';
+    case '兼務':
+      return '兼務';
+    case '要確認':
+      return '要確認';
     default:
       return category;
+  }
+}
+
+/**
+ * 媒体ステータスの表示色を取得する
+ */
+export function getMediaStatusColor(status: string): string {
+  switch (status) {
+    case '募集中':
+      return 'bg-green-100 text-green-800';
+    case '準備中':
+      return 'bg-yellow-100 text-yellow-800';
+    case '審査・同期中':
+      return 'bg-blue-100 text-blue-800';
+    case '一時停止':
+      return 'bg-orange-100 text-orange-800';
+    case '終了':
+      return 'bg-gray-100 text-gray-600';
+    case '未掲載':
+    default:
+      return 'bg-gray-50 text-gray-400';
   }
 }
 

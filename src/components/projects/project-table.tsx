@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   useReactTable,
   getCoreRowModel,
@@ -41,6 +43,7 @@ export function ProjectTable({
   searchQuery,
   sortBy,
 }: ProjectTableProps) {
+  const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
 
   // フィルタリングとソート
@@ -231,10 +234,14 @@ export function ProjectTable({
     columnHelper.display({
       id: 'actions',
       header: '',
-      cell: () => (
-        <button className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
+      cell: (info) => (
+        <Link 
+          href={`/projects/${info.row.original.id}`}
+          className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 inline-flex"
+          onClick={(e) => e.stopPropagation()}
+        >
           <ExternalLink className="h-4 w-4" />
-        </button>
+        </Link>
       ),
       size: 50,
     }),
@@ -303,11 +310,12 @@ export function ProjectTable({
                 <tr
                   key={row.id}
                   className={cn(
-                    'border-b border-gray-50 transition-colors hover:bg-gray-50/50',
+                    'border-b border-gray-50 transition-colors hover:bg-gray-50/50 cursor-pointer',
                     'opacity-0 animate-fade-in',
                     index < 5 && `stagger-${index + 1}`
                   )}
                   style={{ animationDelay: index >= 5 ? `${0.05 * index}s` : undefined }}
+                  onClick={() => router.push(`/projects/${row.original.id}`)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td
