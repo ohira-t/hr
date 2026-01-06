@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { Header } from '@/components/layout/header';
@@ -9,8 +10,11 @@ import { ProjectTable } from '@/components/projects/project-table';
 import { Button } from '@/components/ui/button';
 import { mockProjects } from '@/data/mock-projects';
 import type { Category, Segment, ProjectStatus, MediaName, Position, EmploymentType } from '@/types/database';
+import { CATEGORIES, SEGMENTS } from '@/types/database';
 
 export default function ProjectsPage() {
+  const searchParams = useSearchParams();
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<Category | 'all'>('all');
   const [segmentFilter, setSegmentFilter] = useState<Segment | 'all'>('all');
@@ -20,6 +24,22 @@ export default function ProjectsPage() {
   const [employmentTypeFilter, setEmploymentTypeFilter] = useState<EmploymentType | 'all'>('all');
   const [mediaFilter, setMediaFilter] = useState<MediaName[]>([]);
   const [sortBy, setSortBy] = useState<'deadline' | 'elapsed' | 'updated' | 'client'>('deadline');
+
+  // URLパラメータからフィルターを初期化
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    const segmentParam = searchParams.get('segment');
+    
+    if (categoryParam && CATEGORIES.includes(categoryParam as Category)) {
+      setCategoryFilter(categoryParam as Category);
+      setSegmentFilter('all'); // カテゴリ指定時はセグメントをリセット
+    }
+    
+    if (segmentParam && SEGMENTS.includes(segmentParam as Segment)) {
+      setSegmentFilter(segmentParam as Segment);
+      setCategoryFilter('all'); // セグメント指定時はカテゴリをリセット
+    }
+  }, [searchParams]);
 
   // 担当者リストを取得
   const assignees = useMemo(() => {

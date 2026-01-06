@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Sidebar } from "@/components/layout/sidebar";
+import { MainContent } from "@/components/layout/main-content";
+import { LayoutProvider } from "@/components/layout/layout-provider";
 
 export const metadata: Metadata = {
   title: "採用管理システム - HR部",
@@ -20,10 +22,12 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="bg-[#F5F5F7]">
-        <Sidebar />
-        <main className="ml-64 min-h-screen">
-          {children}
-        </main>
+        <LayoutProvider>
+          <Sidebar />
+          <MainContent>
+            {children}
+          </MainContent>
+        </LayoutProvider>
       </body>
     </html>
   );

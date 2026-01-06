@@ -5,6 +5,12 @@ import { MetricCard } from '@/components/dashboard/metric-card';
 import { UrgentProjects } from '@/components/dashboard/urgent-projects';
 import { SlowProjects } from '@/components/dashboard/slow-projects';
 import { HiringChart } from '@/components/dashboard/hiring-chart';
+import { 
+  SegmentAnalytics, 
+  PositionAnalytics, 
+  EmploymentTypeAnalytics, 
+  PrefectureAnalytics 
+} from '@/components/dashboard/analytics-cards';
 import { mockProjects, calculateStats, getUrgentProjects, getSlowProjects } from '@/data/mock-projects';
 import type { Category } from '@/types/database';
 
@@ -47,6 +53,7 @@ export default function DashboardPage() {
       <Header 
         title="ダッシュボード" 
         subtitle={`アクティブ案件: ${totalActive}件 | 採用目標: ${totalCurrent}/${totalTarget}名`}
+        showSearch={false}
       />
       
       <div className="p-6 lg:p-8">
@@ -84,6 +91,14 @@ export default function DashboardPage() {
               index={index}
             />
           ))}
+        </div>
+
+        {/* Analytics Section */}
+        <div className="mb-6 lg:mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          <SegmentAnalytics projects={mockProjects} />
+          <PositionAnalytics projects={mockProjects} />
+          <EmploymentTypeAnalytics projects={mockProjects} />
+          <PrefectureAnalytics projects={mockProjects} />
         </div>
 
         {/* Charts and Alerts */}

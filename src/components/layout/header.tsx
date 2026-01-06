@@ -1,7 +1,6 @@
 'use client';
 
-import { Bell, Search, User, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Search, X } from 'lucide-react';
 import { ReactNode } from 'react';
 
 interface HeaderProps {
@@ -48,27 +47,7 @@ export function Header({ title, subtitle, searchQuery = '', onSearchChange, show
 
         {/* Custom Actions */}
         {actions}
-
-        {/* Notifications */}
-        <Button 
-          variant="ghost" 
-          size="icon"
-          className="relative h-9 w-9 rounded-full hover:bg-gray-100"
-        >
-          <Bell className="h-4 w-4 text-gray-600" />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
-        </Button>
-
-        {/* User */}
-        <Button 
-          variant="ghost" 
-          size="icon"
-          className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 hover:opacity-90"
-        >
-          <User className="h-4 w-4 text-white" />
-        </Button>
       </div>
     </header>
   );
 }
-
