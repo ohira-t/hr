@@ -103,11 +103,14 @@ export function Sidebar() {
       )}
     >
       <div className="flex h-full flex-col">
-        {/* Logo */}
-        <div className={cn(
-          "flex h-16 items-center border-b border-gray-200/60 transition-all duration-300",
-          isSidebarCollapsed ? "justify-center px-3" : "gap-3 px-6"
-        )}>
+        {/* Logo - リンクでダッシュボードに戻る */}
+        <Link
+          href="/"
+          className={cn(
+            "flex h-16 items-center border-b border-gray-200/60 transition-all duration-300 hover:bg-gray-50/50 cursor-pointer",
+            isSidebarCollapsed ? "justify-center px-3" : "gap-3 px-6"
+          )}
+        >
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30 shrink-0">
             <span className="text-base font-bold text-white tracking-tight">HR</span>
           </div>
@@ -119,7 +122,7 @@ export function Sidebar() {
               <p className="text-[11px] font-medium text-gray-500">HR部</p>
             </div>
           )}
-        </div>
+        </Link>
 
         {/* Main Navigation */}
         <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">

@@ -31,13 +31,13 @@ import {
   type Project,
 } from '@/types/database';
 
-// CSVカラム定義
+// CSVカラム定義（レコードと一致）
 const CSV_COLUMNS = [
   { key: 'hrId', label: 'HR ID', required: true },
   { key: 'segment', label: 'セグメント', required: false },
   { key: 'category', label: '業態', required: false },
   { key: 'clientName', label: 'クライアント名', required: false },
-  { key: 'clientNameKana', label: 'クライアント名（カナ）', required: false },
+  { key: 'clientNameKana', label: '補足', required: false },
   { key: 'clientId', label: 'クライアントID', required: false },
   { key: 'applicationId', label: '申請ID', required: false },
   { key: 'prefecture', label: '都道府県', required: false },
@@ -54,7 +54,8 @@ const CSV_COLUMNS = [
   { key: 'handoverDate', label: '引継日', required: false },
   { key: 'deadlineDate', label: '期限', required: false },
   { key: 'hurdles', label: 'ハードル・アラーム', required: false },
-  { key: 'memo', label: 'メモ', required: false },
+  { key: 'notes', label: '備考・状況', required: false },
+  { key: 'nextAction', label: '次アクション', required: false },
 ];
 
 interface ImportResult {
@@ -94,7 +95,7 @@ export default function CSVPage() {
       '新規', // セグメント
       '就労', // 業態
       '株式会社サンプル', // クライアント名
-      'カブシキガイシャサンプル', // カナ
+      '補足情報など', // 補足
       'CL-0000', // クライアントID
       'AP-2025-000', // 申請ID
       '東京都', // 都道府県
@@ -110,8 +111,9 @@ export default function CSVPage() {
       '', // 開業日
       '', // 引継日
       '', // 期限
-      '', // ハードル
-      '', // メモ
+      '', // ハードル・アラーム
+      '', // 備考・状況
+      '', // 次アクション
     ].map(v => escapeCSV(v)).join(',');
 
     const bom = '\uFEFF';
@@ -151,7 +153,8 @@ export default function CSVPage() {
         formatDateForCSV(project.handoverDate),
         formatDateForCSV(project.deadlineDate),
         project.hurdles,
-        project.memo,
+        project.notes,
+        project.nextAction,
       ].map(v => escapeCSV(v)).join(',');
     }).join('\n');
 
