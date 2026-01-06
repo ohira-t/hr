@@ -92,13 +92,16 @@ export async function POST(request: NextRequest) {
               if (!isNaN(parsed)) {
                 updateData[key] = parsed;
               }
-            } else if (key === 'handoverDate' || key === 'deadlineDate' || key === 'openingDate') {
+            } else if (key === 'handoverDate' || key === 'deadlineDate') {
               // 日付形式を正規化 (2024/09/01 → 2024-09-01)
               const normalizedValue = value.replace(/\//g, '-');
               const date = new Date(normalizedValue);
               if (!isNaN(date.getTime())) {
                 updateData[key] = date;
               }
+            } else if (key === 'openingDate') {
+              // openingDateは文字列のまま保存
+              updateData[key] = value.trim();
             } else {
               updateData[key] = value.trim();
             }
