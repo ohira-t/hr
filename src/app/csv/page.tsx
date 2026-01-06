@@ -18,7 +18,13 @@ import {
   Info
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { mockProjects } from '@/data/mock-projects';
+import { 
+  mockProjects, 
+  getProjectByHrId, 
+  addProject, 
+  updateProject,
+  createDefaultProject 
+} from '@/data/mock-projects';
 import { 
   CATEGORIES, 
   SEGMENTS, 
@@ -301,12 +307,18 @@ export default function CSVPage() {
         });
 
         if (existingProject) {
-          // 既存データの更新（実際のAPIでは更新処理を行う）
-          console.log(`更新: ${hrId}`, updateData);
+          // 既存データの更新
+          updateProject(hrId, updateData);
           result.updated++;
         } else {
-          // 新規作成（実際のAPIでは作成処理を行う）
-          console.log(`新規作成: ${hrId}`, updateData);
+          // 新規作成
+          const newProject = createDefaultProject(hrId);
+          Object.entries(updateData).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+              (newProject as Record<string, unknown>)[key] = value;
+            }
+          });
+          addProject(newProject);
           result.created++;
         }
         result.success++;

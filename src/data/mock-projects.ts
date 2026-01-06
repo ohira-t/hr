@@ -458,3 +458,61 @@ export function getSlowProjects(limit = 5): Project[] {
 export function getProjectById(id: string): Project | undefined {
   return mockProjects.find(p => p.id === id);
 }
+
+// HR IDで案件を取得
+export function getProjectByHrId(hrId: string): Project | undefined {
+  return mockProjects.find(p => p.hrId === hrId);
+}
+
+// 案件を追加
+export function addProject(project: Project): void {
+  mockProjects.push(project);
+}
+
+// 案件を更新（既存データに空白以外の値をマージ）
+export function updateProject(hrId: string, updates: Partial<Project>): boolean {
+  const index = mockProjects.findIndex(p => p.hrId === hrId);
+  if (index === -1) return false;
+  
+  // 空白でない値のみ更新
+  Object.entries(updates).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      (mockProjects[index] as Record<string, unknown>)[key] = value;
+    }
+  });
+  mockProjects[index].lastUpdated = new Date();
+  return true;
+}
+
+// 新規プロジェクトのデフォルト値を作成
+export function createDefaultProject(hrId: string): Project {
+  return {
+    id: `import-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    hrId,
+    segment: '新規',
+    category: '就労',
+    clientName: '',
+    clientNameKana: '',
+    clientId: '',
+    applicationId: '',
+    prefecture: '',
+    city: '',
+    facilityName: '',
+    position: 'サビ管',
+    employmentType: '正社員',
+    targetHiringCount: 1,
+    currentHiringCount: 0,
+    status: '採用活動中',
+    assignee: '',
+    department: '推進部',
+    handoverDate: null,
+    deadlineDate: null,
+    openingDate: null,
+    media: createMediaList(`import-${Date.now()}`, Array(MEDIA_NAMES.length).fill('未掲載')),
+    hurdles: '',
+    notes: '',
+    nextAction: '',
+    createdAt: new Date(),
+    lastUpdated: new Date(),
+  };
+}
