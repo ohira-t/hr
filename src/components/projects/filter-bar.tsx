@@ -19,19 +19,24 @@ import {
   Newspaper
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { Category, Segment, ProjectStatus, MediaName } from '@/types/database';
+import type { Category, Segment, ProjectStatus, MediaName, Position, EmploymentType } from '@/types/database';
+import { POSITIONS, EMPLOYMENT_TYPES } from '@/types/database';
 
 interface FilterBarProps {
   categoryFilter: Category | 'all';
   segmentFilter: Segment | 'all';
   statusFilter: ProjectStatus | 'all';
   assigneeFilter: string | 'all';
+  positionFilter: Position | 'all';
+  employmentTypeFilter: EmploymentType | 'all';
   mediaFilter: MediaName[];
   sortBy: 'deadline' | 'elapsed' | 'updated' | 'client';
   onCategoryChange: (category: Category | 'all') => void;
   onSegmentChange: (segment: Segment | 'all') => void;
   onStatusChange: (status: ProjectStatus | 'all') => void;
   onAssigneeChange: (assignee: string | 'all') => void;
+  onPositionChange: (position: Position | 'all') => void;
+  onEmploymentTypeChange: (employmentType: EmploymentType | 'all') => void;
   onMediaChange: (media: MediaName[]) => void;
   onSortChange: (sort: 'deadline' | 'elapsed' | 'updated' | 'client') => void;
   onReset: () => void;
@@ -84,12 +89,16 @@ export function FilterBar({
   segmentFilter,
   statusFilter,
   assigneeFilter,
+  positionFilter,
+  employmentTypeFilter,
   mediaFilter,
   sortBy,
   onCategoryChange,
   onSegmentChange,
   onStatusChange,
   onAssigneeChange,
+  onPositionChange,
+  onEmploymentTypeChange,
   onMediaChange,
   onSortChange,
   onReset,
@@ -114,11 +123,15 @@ export function FilterBar({
     segmentFilter !== 'all' || 
     statusFilter !== 'all' ||
     assigneeFilter !== 'all' ||
+    positionFilter !== 'all' ||
+    employmentTypeFilter !== 'all' ||
     mediaFilter.length > 0;
 
   const detailFilterCount = 
     (statusFilter !== 'all' ? 1 : 0) +
     (assigneeFilter !== 'all' ? 1 : 0) +
+    (positionFilter !== 'all' ? 1 : 0) +
+    (employmentTypeFilter !== 'all' ? 1 : 0) +
     (mediaFilter.length > 0 ? 1 : 0);
 
   const toggleMedia = (media: MediaName) => {
@@ -197,6 +210,76 @@ export function FilterBar({
                           )}
                         >
                           {assignee}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Position Filter */}
+                  <div className="mb-4">
+                    <label className="flex items-center gap-2 text-xs font-medium text-gray-500 mb-2">
+                      <Briefcase className="h-3.5 w-3.5" />
+                      募集職種
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      <button
+                        onClick={() => onPositionChange('all')}
+                        className={cn(
+                          'px-2.5 py-1 rounded-lg text-xs font-medium transition-colors',
+                          positionFilter === 'all'
+                            ? 'bg-gray-900 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        )}
+                      >
+                        全て
+                      </button>
+                      {POSITIONS.map((position) => (
+                        <button
+                          key={position}
+                          onClick={() => onPositionChange(position)}
+                          className={cn(
+                            'px-2.5 py-1 rounded-lg text-xs font-medium transition-colors',
+                            positionFilter === position
+                              ? 'bg-gray-900 text-white'
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          )}
+                        >
+                          {position}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Employment Type Filter */}
+                  <div className="mb-4">
+                    <label className="flex items-center gap-2 text-xs font-medium text-gray-500 mb-2">
+                      <Clock className="h-3.5 w-3.5" />
+                      勤務形態
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      <button
+                        onClick={() => onEmploymentTypeChange('all')}
+                        className={cn(
+                          'px-2.5 py-1 rounded-lg text-xs font-medium transition-colors',
+                          employmentTypeFilter === 'all'
+                            ? 'bg-gray-900 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        )}
+                      >
+                        全て
+                      </button>
+                      {EMPLOYMENT_TYPES.map((type) => (
+                        <button
+                          key={type}
+                          onClick={() => onEmploymentTypeChange(type)}
+                          className={cn(
+                            'px-2.5 py-1 rounded-lg text-xs font-medium transition-colors',
+                            employmentTypeFilter === type
+                              ? 'bg-gray-900 text-white'
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          )}
+                        >
+                          {type}
                         </button>
                       ))}
                     </div>
@@ -339,7 +422,7 @@ export function FilterBar({
       </div>
 
       {/* Active Filter Chips */}
-      {(assigneeFilter !== 'all' || mediaFilter.length > 0 || statusFilter !== 'all') && (
+      {(assigneeFilter !== 'all' || positionFilter !== 'all' || employmentTypeFilter !== 'all' || mediaFilter.length > 0 || statusFilter !== 'all') && (
         <div className="flex items-center gap-2 px-1">
           <span className="text-xs text-gray-500">適用中:</span>
           {statusFilter !== 'all' && (
@@ -359,6 +442,26 @@ export function FilterBar({
               onClick={() => onAssigneeChange('all')}
             >
               担当: {assigneeFilter}
+              <X className="h-3 w-3" />
+            </Badge>
+          )}
+          {positionFilter !== 'all' && (
+            <Badge 
+              variant="secondary" 
+              className="gap-1 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 cursor-pointer"
+              onClick={() => onPositionChange('all')}
+            >
+              職種: {positionFilter}
+              <X className="h-3 w-3" />
+            </Badge>
+          )}
+          {employmentTypeFilter !== 'all' && (
+            <Badge 
+              variant="secondary" 
+              className="gap-1 bg-amber-100 text-amber-700 hover:bg-amber-200 cursor-pointer"
+              onClick={() => onEmploymentTypeChange('all')}
+            >
+              形態: {employmentTypeFilter}
               <X className="h-3 w-3" />
             </Badge>
           )}

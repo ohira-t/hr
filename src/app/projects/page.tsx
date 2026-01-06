@@ -8,7 +8,7 @@ import { FilterBar } from '@/components/projects/filter-bar';
 import { ProjectTable } from '@/components/projects/project-table';
 import { Button } from '@/components/ui/button';
 import { mockProjects } from '@/data/mock-projects';
-import type { Category, Segment, ProjectStatus, MediaName } from '@/types/database';
+import type { Category, Segment, ProjectStatus, MediaName, Position, EmploymentType } from '@/types/database';
 
 export default function ProjectsPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,6 +16,8 @@ export default function ProjectsPage() {
   const [segmentFilter, setSegmentFilter] = useState<Segment | 'all'>('all');
   const [statusFilter, setStatusFilter] = useState<ProjectStatus | 'all'>('採用活動中');
   const [assigneeFilter, setAssigneeFilter] = useState<string | 'all'>('all');
+  const [positionFilter, setPositionFilter] = useState<Position | 'all'>('all');
+  const [employmentTypeFilter, setEmploymentTypeFilter] = useState<EmploymentType | 'all'>('all');
   const [mediaFilter, setMediaFilter] = useState<MediaName[]>([]);
   const [sortBy, setSortBy] = useState<'deadline' | 'elapsed' | 'updated' | 'client'>('deadline');
 
@@ -31,6 +33,8 @@ export default function ProjectsPage() {
     setSegmentFilter('all');
     setStatusFilter('採用活動中');
     setAssigneeFilter('all');
+    setPositionFilter('all');
+    setEmploymentTypeFilter('all');
     setMediaFilter([]);
     setSortBy('deadline');
   };
@@ -66,12 +70,16 @@ export default function ProjectsPage() {
           segmentFilter={segmentFilter}
           statusFilter={statusFilter}
           assigneeFilter={assigneeFilter}
+          positionFilter={positionFilter}
+          employmentTypeFilter={employmentTypeFilter}
           mediaFilter={mediaFilter}
           sortBy={sortBy}
           onCategoryChange={setCategoryFilter}
           onSegmentChange={setSegmentFilter}
           onStatusChange={setStatusFilter}
           onAssigneeChange={setAssigneeFilter}
+          onPositionChange={setPositionFilter}
+          onEmploymentTypeChange={setEmploymentTypeFilter}
           onMediaChange={setMediaFilter}
           onSortChange={setSortBy}
           onReset={handleReset}
@@ -85,6 +93,8 @@ export default function ProjectsPage() {
           segmentFilter={segmentFilter}
           statusFilter={statusFilter}
           assigneeFilter={assigneeFilter}
+          positionFilter={positionFilter}
+          employmentTypeFilter={employmentTypeFilter}
           mediaFilter={mediaFilter}
           searchQuery={searchQuery}
           sortBy={sortBy}

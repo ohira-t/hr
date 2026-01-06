@@ -17,7 +17,7 @@ import { MediaMatrix } from './media-matrix';
 import { cn } from '@/lib/utils';
 import { getCategoryColor, getSegmentColor, getStatusColor } from '@/lib/category-utils';
 import { calculateDateInfo, formatElapsedDays, formatRemainingDays, formatDate } from '@/lib/date-utils';
-import type { Project, Category, Segment, ProjectStatus, MediaName } from '@/types/database';
+import type { Project, Category, Segment, ProjectStatus, MediaName, Position, EmploymentType } from '@/types/database';
 import { ChevronDown, ChevronUp, ChevronsUpDown, ExternalLink } from 'lucide-react';
 
 interface ProjectTableProps {
@@ -26,6 +26,8 @@ interface ProjectTableProps {
   segmentFilter: Segment | 'all';
   statusFilter: ProjectStatus | 'all';
   assigneeFilter: string | 'all';
+  positionFilter: Position | 'all';
+  employmentTypeFilter: EmploymentType | 'all';
   mediaFilter: MediaName[];
   searchQuery: string;
   sortBy: 'deadline' | 'elapsed' | 'updated' | 'client';
@@ -39,6 +41,8 @@ export function ProjectTable({
   segmentFilter,
   statusFilter,
   assigneeFilter,
+  positionFilter,
+  employmentTypeFilter,
   mediaFilter,
   searchQuery,
   sortBy,
@@ -77,6 +81,14 @@ export function ProjectTable({
     // 担当者フィルタ
     if (assigneeFilter !== 'all') {
       result = result.filter(p => p.assignee === assigneeFilter);
+    }
+    // 募集職種フィルタ
+    if (positionFilter !== 'all') {
+      result = result.filter(p => p.position === positionFilter);
+    }
+    // 勤務形態フィルタ
+    if (employmentTypeFilter !== 'all') {
+      result = result.filter(p => p.employmentType === employmentTypeFilter);
     }
     // 媒体フィルタ（複数選択 - いずれかの媒体が募集中なら表示）
     if (mediaFilter.length > 0) {
