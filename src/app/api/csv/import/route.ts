@@ -92,8 +92,10 @@ export async function POST(request: NextRequest) {
               if (!isNaN(parsed)) {
                 updateData[key] = parsed;
               }
-            } else if (key === 'handoverDate' || key === 'deadlineDate') {
-              const date = new Date(value);
+            } else if (key === 'handoverDate' || key === 'deadlineDate' || key === 'openingDate') {
+              // 日付形式を正規化 (2024/09/01 → 2024-09-01)
+              const normalizedValue = value.replace(/\//g, '-');
+              const date = new Date(normalizedValue);
               if (!isNaN(date.getTime())) {
                 updateData[key] = date;
               }
@@ -132,7 +134,8 @@ export async function POST(request: NextRequest) {
         result.success++;
       } catch (error) {
         console.error(`Row ${i + 2} error:`, error);
-        result.errors.push(`行${i + 2}: 処理中にエラーが発生しました`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        result.errors.push(`行${i + 2}: ${errorMessage}`);
         result.failed++;
       }
     }
