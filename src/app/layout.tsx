@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import { Sidebar } from "@/components/layout/sidebar";
 import { MainContent } from "@/components/layout/main-content";
@@ -23,7 +24,9 @@ export default function RootLayout({
       </head>
       <body className="bg-[#F5F5F7]">
         <LayoutProvider>
-          <Sidebar />
+          <Suspense fallback={<div className="w-64 h-screen bg-white/80 shrink-0" />}>
+            <Sidebar />
+          </Suspense>
           <MainContent>
             {children}
           </MainContent>

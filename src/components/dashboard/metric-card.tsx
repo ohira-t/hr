@@ -25,7 +25,13 @@ interface MetricCardProps {
   index: number;
 }
 
-const categoryConfig = {
+const categoryConfig: Record<string, {
+  icon: typeof Briefcase;
+  gradient: string;
+  iconBg: string;
+  progressColor: string;
+  lightBg: string;
+}> = {
   '就労': {
     icon: Briefcase,
     gradient: 'from-emerald-500 to-teal-600',

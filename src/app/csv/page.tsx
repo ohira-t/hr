@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Header } from '@/components/layout/header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,24 +18,6 @@ import {
   Info
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { 
-  mockProjects, 
-  getProjectByHrId, 
-  addProject, 
-  updateProject,
-  createDefaultProject 
-} from '@/data/mock-projects';
-import { 
-  CATEGORIES, 
-  SEGMENTS, 
-  PROJECT_STATUSES, 
-  POSITIONS, 
-  EMPLOYMENT_TYPES,
-  PREFECTURES,
-  MEDIA_NAMES,
-  MEDIA_STATUSES,
-  type Project,
-} from '@/types/database';
 
 // CSVカラム定義（レコードと一致）
 const CSV_COLUMNS = [
@@ -71,11 +53,55 @@ interface ImportResult {
   errors: { row: number; message: string }[];
 }
 
+interface ApiProject {
+  id: string;
+  hrId: string;
+  segment: string;
+  category: string;
+  clientName: string;
+  clientNameKana: string;
+  clientId: string;
+  applicationId: string;
+  prefecture: string;
+  city: string;
+  facilityName: string;
+  position: string;
+  employmentType: string;
+  targetHiringCount: number;
+  currentHiringCount: number;
+  status: string;
+  assignee: string;
+  department: string;
+  handoverDate: string | null;
+  deadlineDate: string | null;
+  openingDate: string | null;
+  hurdles: string;
+  notes: string;
+  nextAction: string;
+}
+
 export default function CSVPage() {
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [projectCount, setProjectCount] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // プロジェクト数を取得
+  useEffect(() => {
+    async function fetchCount() {
+      try {
+        const response = await fetch('/api/projects');
+        if (response.ok) {
+          const data = await response.json();
+          setProjectCount(data.length);
+        }
+      } catch (error) {
+        console.error('Failed to fetch project count:', error);
+      }
+    }
+    fetchCount();
+  }, [importResult]); // インポート後に再取得
 
   // CSVエスケープ処理
   const escapeCSV = (value: string | number | null | undefined): string => {
@@ -134,45 +160,57 @@ export default function CSVPage() {
   };
 
   // データエクスポート
-  const handleExport = () => {
-    const headers = CSV_COLUMNS.map(col => col.label).join(',');
-    const rows = mockProjects.map(project => {
-      return [
-        project.hrId,
-        project.segment,
-        project.category,
-        project.clientName,
-        project.clientNameKana,
-        project.clientId,
-        project.applicationId,
-        project.prefecture,
-        project.city,
-        project.facilityName,
-        project.position,
-        project.employmentType,
-        project.targetHiringCount,
-        project.currentHiringCount,
-        project.status,
-        project.assignee,
-        project.department,
-        project.openingDate,
-        formatDateForCSV(project.handoverDate),
-        formatDateForCSV(project.deadlineDate),
-        project.hurdles,
-        project.notes,
-        project.nextAction,
-      ].map(v => escapeCSV(v)).join(',');
-    }).join('\n');
+  const handleExport = async () => {
+    setIsProcessing(true);
+    try {
+      const response = await fetch('/api/projects');
+      if (!response.ok) throw new Error('Failed to fetch projects');
+      const projects: ApiProject[] = await response.json();
 
-    const bom = '\uFEFF';
-    const csv = bom + headers + '\n' + rows;
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `採用案件_エクスポート_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+      const headers = CSV_COLUMNS.map(col => col.label).join(',');
+      const rows = projects.map(project => {
+        return [
+          project.hrId,
+          project.segment,
+          project.category,
+          project.clientName,
+          project.clientNameKana,
+          project.clientId,
+          project.applicationId,
+          project.prefecture,
+          project.city,
+          project.facilityName,
+          project.position,
+          project.employmentType,
+          project.targetHiringCount,
+          project.currentHiringCount,
+          project.status,
+          project.assignee,
+          project.department,
+          project.openingDate || '',
+          project.handoverDate ? project.handoverDate.split('T')[0] : '',
+          project.deadlineDate ? project.deadlineDate.split('T')[0] : '',
+          project.hurdles,
+          project.notes,
+          project.nextAction,
+        ].map(v => escapeCSV(v)).join(',');
+      }).join('\n');
+
+      const bom = '\uFEFF';
+      const csv = bom + headers + '\n' + rows;
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `採用案件_エクスポート_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Export error:', error);
+      alert('エクスポートに失敗しました');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   // CSVパース
@@ -245,86 +283,31 @@ export default function CSVPage() {
       }
 
       const headers = rows[0];
-      const hrIdIndex = headers.findIndex(h => h === 'HR ID' || h === 'hrId');
+      const dataRows = rows.slice(1);
 
-      if (hrIdIndex === -1) {
-        setImportResult({
-          success: 0,
-          updated: 0,
-          created: 0,
-          errors: [{ row: 1, message: 'HR ID列が見つかりません' }],
-        });
-        return;
-      }
-
-      const result: ImportResult = {
-        success: 0,
-        updated: 0,
-        created: 0,
-        errors: [],
-      };
-
-      // ヘッダーとカラムのマッピング
-      const columnMap: { [key: number]: string } = {};
-      headers.forEach((header, index) => {
-        const column = CSV_COLUMNS.find(col => col.label === header || col.key === header);
-        if (column) {
-          columnMap[index] = column.key;
-        }
+      // APIにリクエスト
+      const response = await fetch('/api/csv/import', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          headers,
+          rows: dataRows,
+        }),
       });
 
-      for (let i = 1; i < rows.length; i++) {
-        const row = rows[i];
-        const hrId = row[hrIdIndex];
-
-        if (!hrId || hrId.trim() === '') {
-          result.errors.push({ row: i + 1, message: 'HR IDが空です' });
-          continue;
-        }
-
-        // 既存プロジェクトを検索
-        const existingProject = mockProjects.find(p => p.hrId === hrId);
-
-        // 更新データの構築（空白は無視）
-        const updateData: Partial<Project> = {};
-        Object.entries(columnMap).forEach(([indexStr, key]) => {
-          const index = parseInt(indexStr);
-          const value = row[index];
-          
-          // 空白は無視（上書きしない）
-          if (value !== undefined && value !== null && value.trim() !== '') {
-            if (key === 'targetHiringCount' || key === 'currentHiringCount') {
-              (updateData as Record<string, unknown>)[key] = parseInt(value) || 0;
-            } else if (key === 'handoverDate' || key === 'deadlineDate') {
-              const date = new Date(value);
-              if (!isNaN(date.getTime())) {
-                (updateData as Record<string, unknown>)[key] = date;
-              }
-            } else {
-              (updateData as Record<string, unknown>)[key] = value;
-            }
-          }
-        });
-
-        if (existingProject) {
-          // 既存データの更新
-          updateProject(hrId, updateData);
-          result.updated++;
-        } else {
-          // 新規作成
-          const newProject = createDefaultProject(hrId);
-          Object.entries(updateData).forEach(([key, value]) => {
-            if (value !== undefined && value !== null) {
-              (newProject as Record<string, unknown>)[key] = value;
-            }
-          });
-          addProject(newProject);
-          result.created++;
-        }
-        result.success++;
+      if (!response.ok) {
+        throw new Error('Import API failed');
       }
 
-      setImportResult(result);
+      const result = await response.json();
+      setImportResult({
+        success: result.success,
+        updated: result.updated,
+        created: result.created,
+        errors: result.errors?.map((e: string, i: number) => ({ row: i + 2, message: e })) || [],
+      });
     } catch (error) {
       console.error('Import error:', error);
       setImportResult({
@@ -552,7 +535,7 @@ export default function CSVPage() {
                   全データをCSVでダウンロード
                 </p>
                 <p className="text-xs text-gray-500 mb-4">
-                  {mockProjects.length}件の案件データ
+                  {projectCount}件の案件データ
                 </p>
                 <Button
                   variant="primary"

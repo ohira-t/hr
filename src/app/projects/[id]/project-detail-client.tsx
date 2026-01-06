@@ -46,7 +46,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
     setEditedProject({ ...editedProject, [field]: value });
   };
 
-  const handleMediaChange = (mediaId: number, field: 'status' | 'startDate' | 'endDate', value: string) => {
+  const handleMediaChange = (mediaId: string, field: 'status' | 'startDate' | 'endDate', value: string) => {
     const updatedMedia = editedProject.media.map(m => 
       m.id === mediaId ? { ...m, [field]: field === 'startDate' || field === 'endDate' ? (value ? new Date(value) : null) : value } : m
     );

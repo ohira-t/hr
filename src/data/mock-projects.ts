@@ -477,7 +477,7 @@ export function updateProject(hrId: string, updates: Partial<Project>): boolean 
   // 空白でない値のみ更新
   Object.entries(updates).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== '') {
-      (mockProjects[index] as Record<string, unknown>)[key] = value;
+      (mockProjects[index] as unknown as Record<string, unknown>)[key] = value;
     }
   });
   mockProjects[index].lastUpdated = new Date();

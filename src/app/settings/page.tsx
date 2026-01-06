@@ -33,7 +33,7 @@ const initialTargets: TargetSetting[] = [
   { category: '看護', segment: '既存', target: 8 },
 ];
 
-const categoryConfig = {
+const categoryConfig: Record<string, { icon: typeof Briefcase; color: string; bg: string }> = {
   '就労': { icon: Briefcase, color: 'text-emerald-600', bg: 'bg-emerald-50' },
   'GH': { icon: Building2, color: 'text-blue-600', bg: 'bg-blue-50' },
   '看護': { icon: Stethoscope, color: 'text-purple-600', bg: 'bg-purple-50' },
