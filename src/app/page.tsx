@@ -228,7 +228,7 @@ export default function DashboardPage() {
         showSearch={false}
       />
       
-      <div className="p-6 lg:p-8">
+      <div className="p-4 sm:p-6 lg:p-8 overflow-x-hidden">
         {/* Quick Stats */}
         <div className="mb-6 lg:mb-8 grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           <div className="rounded-2xl bg-white border border-gray-200/60 p-4 lg:p-6 opacity-0 animate-fade-in card-shadow">
@@ -266,7 +266,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Analytics Section */}
-        <div className="mb-6 lg:mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div className="mb-6 lg:mb-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
           <SegmentAnalytics projects={projects} />
           <PositionAnalytics projects={projects} />
           <EmploymentTypeAnalytics projects={projects} />

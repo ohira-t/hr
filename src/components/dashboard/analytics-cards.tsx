@@ -65,10 +65,10 @@ export function SegmentAnalytics({ projects }: AnalyticsCardsProps) {
     <Card className="border-0 card-shadow">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-100 to-orange-100">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-100 to-orange-100 shrink-0">
             <Sparkles className="h-4 w-4 text-amber-600" />
           </div>
-          セグメント別
+          <span className="truncate">セグメント別</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -79,21 +79,21 @@ export function SegmentAnalytics({ projects }: AnalyticsCardsProps) {
               <Link
                 key={stat.label}
                 href={stat.href}
-                className="flex items-center justify-between p-3 rounded-xl bg-gray-50/80 hover:bg-gray-100 transition-colors group"
+                className="flex items-center justify-between p-3 rounded-xl bg-gray-50/80 hover:bg-gray-100 transition-colors group min-w-0"
               >
-                <div className="flex items-center gap-3">
-                  <div className={cn('rounded-lg p-2', stat.bgColor)}>
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <div className={cn('rounded-lg p-2 shrink-0', stat.bgColor)}>
                     <stat.icon className={cn('h-4 w-4', stat.color)} />
                   </div>
-                  <div className="min-w-[100px]">
-                    <p className="text-sm font-medium text-gray-900">{stat.label}案件</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-gray-900 truncate">{stat.label}案件</p>
                     <p className="text-xs text-gray-500 whitespace-nowrap">
                       稼働 {stat.active}件・全{stat.count}件
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex flex-col items-end gap-0.5 min-w-[80px]">
+                <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+                  <div className="flex flex-col items-end gap-0.5">
                     <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                       {stat.hired}/{stat.target}名
                     </p>
@@ -147,10 +147,10 @@ export function PositionAnalytics({ projects }: AnalyticsCardsProps) {
     <Card className="border-0 card-shadow">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-100 to-teal-100">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-100 to-teal-100 shrink-0">
             <Briefcase className="h-4 w-4 text-emerald-600" />
           </div>
-          募集職種別
+          <span className="truncate">募集職種別</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -219,10 +219,10 @@ export function EmploymentTypeAnalytics({ projects }: AnalyticsCardsProps) {
     <Card className="border-0 card-shadow">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100 shrink-0">
             <Clock className="h-4 w-4 text-blue-600" />
           </div>
-          勤務形態別
+          <span className="truncate">勤務形態別</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -313,10 +313,10 @@ export function PrefectureAnalytics({ projects }: AnalyticsCardsProps) {
     <Card className="border-0 card-shadow">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-100 to-pink-100">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-100 to-pink-100 shrink-0">
             <MapPin className="h-4 w-4 text-purple-600" />
           </div>
-          都道府県別（アクティブ案件）
+          <span className="truncate">都道府県別（アクティブ案件）</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
