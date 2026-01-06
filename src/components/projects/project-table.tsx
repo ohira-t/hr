@@ -239,9 +239,25 @@ export function ProjectTable({
     columnHelper.accessor('assignee', {
       header: '担当',
       cell: (info) => (
-        <span className="text-sm text-gray-600">{info.getValue()}</span>
+        <span className="text-sm text-gray-600 whitespace-nowrap">{info.getValue()}</span>
       ),
       size: 80,
+    }),
+    columnHelper.accessor('nextAction', {
+      header: '次アクション',
+      cell: (info) => {
+        const value = info.getValue();
+        return value ? (
+          <div className="min-w-[180px] max-w-[280px]">
+            <p className="text-sm text-gray-700 line-clamp-2" title={value}>
+              {value}
+            </p>
+          </div>
+        ) : (
+          <span className="text-xs text-gray-400">-</span>
+        );
+      },
+      size: 220,
     }),
     columnHelper.display({
       id: 'actions',
@@ -273,8 +289,8 @@ export function ProjectTable({
 
   return (
     <div className="overflow-hidden rounded-2xl bg-white card-shadow">
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
+        <table className="w-full min-w-[1200px]">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-gray-100">
