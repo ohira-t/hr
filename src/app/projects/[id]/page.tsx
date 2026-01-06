@@ -19,7 +19,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   
   const dbProject = await prisma.project.findUnique({
     where: { id },
-    include: { media: true },
+    include: { MediaManagement: true },
   });
 
   if (!dbProject) {
@@ -27,7 +27,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   }
 
   // DBの結果をProject型に変換
-  const mediaMap = new Map(dbProject.media.map(m => [m.mediaName, m]));
+  const mediaMap = new Map(dbProject.MediaManagement.map(m => [m.mediaName, m]));
   const allMedia: MediaManagement[] = MEDIA_NAMES.map(mediaName => {
     const existing = mediaMap.get(mediaName);
     return {

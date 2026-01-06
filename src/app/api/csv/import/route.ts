@@ -117,18 +117,23 @@ export async function POST(request: NextRequest) {
           // 更新
           await prisma.project.update({
             where: { hrId },
-            data: updateData,
+            data: {
+              ...updateData,
+              lastUpdated: new Date(),
+            },
           });
           result.updated++;
         } else {
           // 新規作成
           await prisma.project.create({
             data: {
+              id: crypto.randomUUID(),
               hrId,
               segment: (updateData.segment as string) || '新規',
               category: (updateData.category as string) || '就労',
               clientName: (updateData.clientName as string) || '',
               ...updateData,
+              lastUpdated: new Date(),
             },
           });
           result.created++;

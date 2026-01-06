@@ -19,33 +19,33 @@ const MEDIA_NAMES = [
 
 // 担当者リスト
 const ASSIGNEES = [
-  { name: '小山', order: 1 },
-  { name: '木村', order: 2 },
-  { name: '山根', order: 3 },
-  { name: '土田', order: 4 },
-  { name: '新山', order: 5 },
-  { name: '片浦', order: 6 },
-  { name: '平田', order: 7 },
-  { name: '荒川', order: 8 },
-  { name: '菊池', order: 9 },
-  { name: '古橋', order: 10 },
-  { name: '橋本', order: 11 },
-  { name: '市倉', order: 12 },
-  { name: '大木', order: 13 },
-  { name: '町田', order: 14 },
-  { name: '円子', order: 15 },
-  { name: '佐久間', order: 16 },
-  { name: '三森', order: 17 },
-  { name: '千田', order: 18 },
-  { name: '飯塚', order: 19 },
-  { name: '佐藤', order: 20 },
-  { name: '冨岡', order: 21 },
-  { name: '後藤', order: 22 },
-  { name: '千葉', order: 23 },
-  { name: '柴田', order: 24 },
-  { name: '山本', order: 25 },
-  { name: '杉本', order: 26 },
-  { name: '安野', order: 27 },
+  { id: 'assignee-001', name: '小山', order: 1 },
+  { id: 'assignee-002', name: '木村', order: 2 },
+  { id: 'assignee-003', name: '山根', order: 3 },
+  { id: 'assignee-004', name: '土田', order: 4 },
+  { id: 'assignee-005', name: '新山', order: 5 },
+  { id: 'assignee-006', name: '片浦', order: 6 },
+  { id: 'assignee-007', name: '平田', order: 7 },
+  { id: 'assignee-008', name: '荒川', order: 8 },
+  { id: 'assignee-009', name: '菊池', order: 9 },
+  { id: 'assignee-010', name: '古橋', order: 10 },
+  { id: 'assignee-011', name: '橋本', order: 11 },
+  { id: 'assignee-012', name: '市倉', order: 12 },
+  { id: 'assignee-013', name: '大木', order: 13 },
+  { id: 'assignee-014', name: '町田', order: 14 },
+  { id: 'assignee-015', name: '円子', order: 15 },
+  { id: 'assignee-016', name: '佐久間', order: 16 },
+  { id: 'assignee-017', name: '三森', order: 17 },
+  { id: 'assignee-018', name: '千田', order: 18 },
+  { id: 'assignee-019', name: '飯塚', order: 19 },
+  { id: 'assignee-020', name: '佐藤', order: 20 },
+  { id: 'assignee-021', name: '冨岡', order: 21 },
+  { id: 'assignee-022', name: '後藤', order: 22 },
+  { id: 'assignee-023', name: '千葉', order: 23 },
+  { id: 'assignee-024', name: '柴田', order: 24 },
+  { id: 'assignee-025', name: '山本', order: 25 },
+  { id: 'assignee-026', name: '杉本', order: 26 },
+  { id: 'assignee-027', name: '安野', order: 27 },
 ];
 
 // サンプルプロジェクトデータ
@@ -183,11 +183,17 @@ async function main() {
   console.log('Creating projects...');
   for (const projectData of SAMPLE_PROJECTS) {
     const { media, ...project } = projectData;
+    const projectId = crypto.randomUUID();
+    const now = new Date();
     
     const createdProject = await prisma.project.upsert({
       where: { hrId: project.hrId },
       update: project,
-      create: project,
+      create: {
+        ...project,
+        id: projectId,
+        lastUpdated: now,
+      },
     });
 
     // メディアを作成
@@ -202,9 +208,11 @@ async function main() {
           },
           update: { status: m.status },
           create: {
+            id: crypto.randomUUID(),
             projectId: createdProject.id,
             mediaName: m.mediaName,
             status: m.status,
+            updatedAt: now,
           },
         });
       }
