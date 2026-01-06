@@ -108,13 +108,13 @@ export default function NewProjectPage() {
               </Button>
             </Link>
             <Button 
-              size="sm" 
-              className="h-9 gap-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 px-4"
+              variant="primary"
+              className="h-9 rounded-full pl-3.5 pr-5 gap-2"
               onClick={handleSubmit}
               disabled={isSubmitting}
             >
-              <Save className="h-[18px] w-[18px]" />
-              <span className="leading-none">{isSubmitting ? '保存中...' : '保存'}</span>
+              <Save className="h-4 w-4" strokeWidth={2} />
+              <span className="leading-none tracking-[-0.01em]">{isSubmitting ? '保存中...' : '保存'}</span>
             </Button>
           </div>
         }
@@ -500,12 +500,13 @@ export default function NewProjectPage() {
           </Link>
           <Button 
             type="submit" 
-            size="lg" 
-            className="rounded-full bg-blue-500 text-white hover:bg-blue-600 gap-2"
+            variant="primary"
+            size="lg"
+            className="rounded-full pl-4 pr-6 gap-2.5"
             disabled={isSubmitting}
           >
-            <Save className="h-[18px] w-[18px]" />
-            <span className="leading-none">{isSubmitting ? '保存中...' : '案件を登録'}</span>
+            <Save className="h-4 w-4" strokeWidth={2} />
+            <span className="leading-none tracking-[-0.01em]">{isSubmitting ? '保存中...' : '案件を登録'}</span>
           </Button>
         </div>
       </form>

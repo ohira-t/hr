@@ -86,23 +86,23 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
                   キャンセル
                 </Button>
                 <Button 
-                  size="sm" 
-                  className="h-9 gap-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 px-4"
+                  variant="primary"
+                  className="h-9 rounded-full pl-3.5 pr-5 gap-2"
                   onClick={handleSave}
                   disabled={isSubmitting}
                 >
-                  <Save className="h-[18px] w-[18px]" />
-                  <span className="leading-none">{isSubmitting ? '保存中...' : '保存'}</span>
+                  <Save className="h-4 w-4" strokeWidth={2} />
+                  <span className="leading-none tracking-[-0.01em]">{isSubmitting ? '保存中...' : '保存'}</span>
                 </Button>
               </>
             ) : (
               <Button 
-                size="sm" 
-                className="h-9 gap-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 px-4"
+                variant="primary"
+                className="h-9 rounded-full pl-3.5 pr-5 gap-2"
                 onClick={() => setIsEditing(true)}
               >
-                <Edit2 className="h-[18px] w-[18px]" />
-                <span className="leading-none">編集</span>
+                <Edit2 className="h-4 w-4" strokeWidth={2} />
+                <span className="leading-none tracking-[-0.01em]">編集</span>
               </Button>
             )}
           </div>
