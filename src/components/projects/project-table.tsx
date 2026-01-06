@@ -161,7 +161,7 @@ export function ProjectTable({
         return (
           <div>
             <p className={cn(
-              'text-sm font-medium',
+              'text-xs font-medium',
               dateInfo.isOverdue ? 'text-red-600' :
               dateInfo.isUrgent ? 'text-amber-600' : 'text-gray-600'
             )}>
