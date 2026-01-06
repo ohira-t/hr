@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { SelectNative } from '@/components/ui/select-native';
 import { cn } from '@/lib/utils';
 import { getCategoryColor, getSegmentColor, getStatusColor, getMediaStatusColor } from '@/lib/category-utils';
 import { calculateDateInfo, formatElapsedDays, formatRemainingDays, formatDate } from '@/lib/date-utils';
@@ -165,13 +166,14 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="text-xs text-gray-500">セグメント</span>
                 {isEditing ? (
-                  <select
+                  <SelectNative
+                    selectSize="sm"
                     value={editedProject?.segment}
                     onChange={(e) => handleChange('segment', e.target.value)}
-                    className="h-8 px-2 rounded-md border border-gray-200 text-sm"
+                    className="w-28"
                   >
                     {SEGMENTS.map(seg => <option key={seg} value={seg}>{seg}</option>)}
-                  </select>
+                  </SelectNative>
                 ) : (
                   <Badge className={cn('text-xs', getSegmentColor(project.segment))}>{project.segment}</Badge>
                 )}
@@ -179,13 +181,14 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
               <div className="flex justify-between items-center py-2">
                 <span className="text-xs text-gray-500">業態</span>
                 {isEditing ? (
-                  <select
+                  <SelectNative
+                    selectSize="sm"
                     value={editedProject?.category}
                     onChange={(e) => handleChange('category', e.target.value)}
-                    className="h-8 px-2 rounded-md border border-gray-200 text-sm"
+                    className="w-28"
                   >
                     {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                  </select>
+                  </SelectNative>
                 ) : (
                   <Badge className={cn('text-xs', getCategoryColor(project.category))}>{project.category}</Badge>
                 )}
@@ -256,13 +259,14 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="text-xs text-gray-500">都道府県</span>
                 {isEditing ? (
-                  <select
+                  <SelectNative
+                    selectSize="sm"
                     value={editedProject?.prefecture}
                     onChange={(e) => handleChange('prefecture', e.target.value)}
-                    className="h-8 px-2 rounded-md border border-gray-200 text-sm"
+                    className="w-28"
                   >
                     {PREFECTURES.map(pref => <option key={pref} value={pref}>{pref}</option>)}
-                  </select>
+                  </SelectNative>
                 ) : (
                   <span className="text-sm text-gray-900">{project.prefecture}</span>
                 )}
@@ -308,13 +312,14 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="text-xs text-gray-500">募集職種</span>
                 {isEditing ? (
-                  <select
+                  <SelectNative
+                    selectSize="sm"
                     value={editedProject?.position}
                     onChange={(e) => handleChange('position', e.target.value)}
-                    className="h-8 px-2 rounded-md border border-gray-200 text-sm"
+                    className="w-28"
                   >
                     {POSITIONS.map(pos => <option key={pos} value={pos}>{pos}</option>)}
-                  </select>
+                  </SelectNative>
                 ) : (
                   <span className="text-sm text-gray-900">{project.position}</span>
                 )}
@@ -322,13 +327,14 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="text-xs text-gray-500">勤務形態</span>
                 {isEditing ? (
-                  <select
+                  <SelectNative
+                    selectSize="sm"
                     value={editedProject?.employmentType}
                     onChange={(e) => handleChange('employmentType', e.target.value)}
-                    className="h-8 px-2 rounded-md border border-gray-200 text-sm"
+                    className="w-28"
                   >
                     {EMPLOYMENT_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
-                  </select>
+                  </SelectNative>
                 ) : (
                   <span className="text-sm text-gray-600">{project.employmentType}</span>
                 )}
@@ -376,13 +382,14 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
               <div className="p-3 rounded-lg bg-gray-50">
                 <span className="text-xs text-gray-500 block mb-1">ステータス</span>
                 {isEditing ? (
-                  <select
+                  <SelectNative
+                    selectSize="sm"
                     value={editedProject?.status}
                     onChange={(e) => handleChange('status', e.target.value)}
-                    className="h-8 w-full px-2 rounded-md border border-gray-200 text-sm"
+                    className="w-full"
                   >
                     {PROJECT_STATUSES.map(status => <option key={status} value={status}>{status}</option>)}
-                  </select>
+                  </SelectNative>
                 ) : (
                   <Badge className={cn('text-xs', getStatusColor(project.status))}>{project.status}</Badge>
                 )}
@@ -390,13 +397,14 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
               <div className="p-3 rounded-lg bg-gray-50">
                 <span className="text-xs text-gray-500 block mb-1">担当者</span>
                 {isEditing ? (
-                  <select
+                  <SelectNative
+                    selectSize="sm"
                     value={editedProject?.assignee}
                     onChange={(e) => handleChange('assignee', e.target.value)}
-                    className="h-8 w-full px-2 rounded-md border border-gray-200 text-sm"
+                    className="w-full"
                   >
                     {assignees.map(name => <option key={name} value={name}>{name}</option>)}
-                  </select>
+                  </SelectNative>
                 ) : (
                   <span className="text-sm font-medium text-gray-900">{project.assignee}</span>
                 )}
@@ -404,13 +412,14 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
               <div className="p-3 rounded-lg bg-gray-50">
                 <span className="text-xs text-gray-500 block mb-1">管轄部署</span>
                 {isEditing ? (
-                  <select
+                  <SelectNative
+                    selectSize="sm"
                     value={editedProject?.department}
                     onChange={(e) => handleChange('department', e.target.value)}
-                    className="h-8 w-full px-2 rounded-md border border-gray-200 text-sm"
+                    className="w-full"
                   >
                     {DEPARTMENTS.map(dept => <option key={dept} value={dept}>{dept}</option>)}
-                  </select>
+                  </SelectNative>
                 ) : (
                   <span className="text-sm text-gray-900">{project.department}</span>
                 )}

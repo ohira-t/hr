@@ -8,6 +8,7 @@ import { Header } from '@/components/layout/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { SelectNative } from '@/components/ui/select-native';
 import { cn } from '@/lib/utils';
 import { 
   CATEGORIES, 
@@ -144,27 +145,25 @@ export default function NewProjectPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">セグメント *</label>
-              <select
+              <SelectNative
                 value={formData.segment}
                 onChange={(e) => handleChange('segment', e.target.value)}
-                className="w-full h-10 px-3 rounded-md border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/5"
               >
                 {SEGMENTS.map(seg => (
                   <option key={seg} value={seg}>{seg}</option>
                 ))}
-              </select>
+              </SelectNative>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">業態 *</label>
-              <select
+              <SelectNative
                 value={formData.category}
                 onChange={(e) => handleChange('category', e.target.value)}
-                className="w-full h-10 px-3 rounded-md border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/5"
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
-              </select>
+              </SelectNative>
             </div>
           </CardContent>
         </Card>
@@ -233,17 +232,16 @@ export default function NewProjectPage() {
           <CardContent className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">都道府県 *</label>
-              <select
+              <SelectNative
                 value={formData.prefecture}
                 onChange={(e) => handleChange('prefecture', e.target.value)}
-                className="w-full h-10 px-3 rounded-md border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/5"
                 required
               >
                 <option value="">選択してください</option>
                 {PREFECTURES.map(pref => (
                   <option key={pref} value={pref}>{pref}</option>
                 ))}
-              </select>
+              </SelectNative>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">市区町村</label>
@@ -279,27 +277,25 @@ export default function NewProjectPage() {
           <CardContent className="grid grid-cols-4 gap-4">
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">募集職種 *</label>
-              <select
+              <SelectNative
                 value={formData.position}
                 onChange={(e) => handleChange('position', e.target.value)}
-                className="w-full h-10 px-3 rounded-md border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/5"
               >
                 {POSITIONS.map(pos => (
                   <option key={pos} value={pos}>{pos}</option>
                 ))}
-              </select>
+              </SelectNative>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">勤務形態 *</label>
-              <select
+              <SelectNative
                 value={formData.employmentType}
                 onChange={(e) => handleChange('employmentType', e.target.value)}
-                className="w-full h-10 px-3 rounded-md border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/5"
               >
                 {EMPLOYMENT_TYPES.map(type => (
                   <option key={type} value={type}>{type}</option>
                 ))}
-              </select>
+              </SelectNative>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">採用目標数</label>
@@ -338,41 +334,38 @@ export default function NewProjectPage() {
             <div className="grid grid-cols-4 gap-4">
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1.5">ステータス *</label>
-                <select
+                <SelectNative
                   value={formData.status}
                   onChange={(e) => handleChange('status', e.target.value)}
-                  className="w-full h-10 px-3 rounded-md border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/5"
                 >
                   {PROJECT_STATUSES.map(status => (
                     <option key={status} value={status}>{status}</option>
                   ))}
-                </select>
+                </SelectNative>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1.5">担当者 *</label>
-                <select
+                <SelectNative
                   value={formData.assignee}
                   onChange={(e) => handleChange('assignee', e.target.value)}
-                  className="w-full h-10 px-3 rounded-md border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/5"
                   required
                 >
                   <option value="">選択してください</option>
                   {assignees.map(name => (
                     <option key={name} value={name}>{name}</option>
                   ))}
-                </select>
+                </SelectNative>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1.5">管轄部署</label>
-                <select
+                <SelectNative
                   value={formData.department}
                   onChange={(e) => handleChange('department', e.target.value)}
-                  className="w-full h-10 px-3 rounded-md border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/5"
                 >
                   {DEPARTMENTS.map(dept => (
                     <option key={dept} value={dept}>{dept}</option>
                   ))}
-                </select>
+                </SelectNative>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1.5">開業日</label>
