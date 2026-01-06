@@ -10,9 +10,9 @@ import {
   Target, 
   Save, 
   RefreshCcw,
-  Briefcase,
-  Building2,
-  Stethoscope,
+  HandHeart,
+  Home,
+  HeartPulse,
   CheckCircle2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -33,10 +33,10 @@ const initialTargets: TargetSetting[] = [
   { category: '看護', segment: '既存', target: 8 },
 ];
 
-const categoryConfig: Record<string, { icon: typeof Briefcase; color: string; bg: string }> = {
-  '就労': { icon: Briefcase, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-  'GH': { icon: Building2, color: 'text-blue-600', bg: 'bg-blue-50' },
-  '看護': { icon: Stethoscope, color: 'text-purple-600', bg: 'bg-purple-50' },
+const categoryConfig: Record<string, { icon: typeof HandHeart; color: string; bg: string }> = {
+  '就労': { icon: HandHeart, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+  'GH': { icon: Home, color: 'text-blue-600', bg: 'bg-blue-50' },
+  '看護': { icon: HeartPulse, color: 'text-purple-600', bg: 'bg-purple-50' },
 };
 
 export default function SettingsPage() {

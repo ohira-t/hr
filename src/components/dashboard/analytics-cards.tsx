@@ -85,10 +85,10 @@ export function SegmentAnalytics({ projects }: AnalyticsCardsProps) {
                   <div className={cn('rounded-lg p-2', stat.bgColor)}>
                     <stat.icon className={cn('h-4 w-4', stat.color)} />
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{stat.label}</p>
-                    <p className="text-xs text-gray-500">
-                      アクティブ {stat.active}件 / 全{stat.count}件
+                  <div className="min-w-[100px]">
+                    <p className="text-sm font-medium text-gray-900">{stat.label}案件</p>
+                    <p className="text-xs text-gray-500 whitespace-nowrap">
+                      稼働 {stat.active}件・全{stat.count}件
                     </p>
                   </div>
                 </div>

@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import type { Category } from '@/types/database';
 import { getCategoryLabel } from '@/lib/category-utils';
-import { Briefcase, Building2, Stethoscope } from 'lucide-react';
+import { HandHeart, Home, HeartPulse } from 'lucide-react';
 
 interface MetricCardProps {
   category: Category;
@@ -26,28 +26,28 @@ interface MetricCardProps {
 }
 
 const categoryConfig: Record<string, {
-  icon: typeof Briefcase;
+  icon: typeof HandHeart;
   gradient: string;
   iconBg: string;
   progressColor: string;
   lightBg: string;
 }> = {
   '就労': {
-    icon: Briefcase,
+    icon: HandHeart,
     gradient: 'from-emerald-500 to-teal-600',
     iconBg: 'bg-emerald-500',
     progressColor: 'bg-emerald-500',
     lightBg: 'bg-emerald-50',
   },
   'GH': {
-    icon: Building2,
+    icon: Home,
     gradient: 'from-blue-500 to-indigo-600',
     iconBg: 'bg-blue-500',
     progressColor: 'bg-blue-500',
     lightBg: 'bg-blue-50',
   },
   '看護': {
-    icon: Stethoscope,
+    icon: HeartPulse,
     gradient: 'from-purple-500 to-pink-600',
     iconBg: 'bg-purple-500',
     progressColor: 'bg-purple-500',
