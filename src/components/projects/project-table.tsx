@@ -139,12 +139,12 @@ export function ProjectTable({
         return (
           <div className="flex items-center gap-1.5">
             {dateInfo.isSlow && (
-              <Badge className="bg-amber-100 text-amber-700 border-0 text-[9px] px-1 py-0">
+              <Badge className="bg-amber-100 text-amber-700 border-0 text-[9px] px-1 py-0 whitespace-nowrap">
                 Slow
               </Badge>
             )}
             <span className={cn(
-              'text-sm',
+              'text-xs whitespace-nowrap',
               dateInfo.isSlow ? 'text-amber-600 font-medium' : 'text-gray-600'
             )}>
               {formatElapsedDays(dateInfo.elapsedDays)}
