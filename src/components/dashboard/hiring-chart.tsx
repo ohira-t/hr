@@ -38,8 +38,8 @@ export function HiringChart({ data }: HiringChartProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[280px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-[280px] w-full" style={{ minWidth: 0, minHeight: 0 }}>
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
             <BarChart
               data={data}
               margin={{ top: 20, right: 30, left: 0, bottom: 5 }}

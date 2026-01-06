@@ -11,7 +11,7 @@ export async function GET(
     const project = await prisma.project.findUnique({
       where: { id },
       include: {
-        media: true,
+        MediaManagement: true,
       },
     });
 
@@ -22,7 +22,14 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(project);
+    // レスポンス形式を整形
+    const formattedProject = {
+      ...project,
+      media: project.MediaManagement,
+      MediaManagement: undefined,
+    };
+
+    return NextResponse.json(formattedProject);
   } catch (error) {
     console.error('Failed to fetch project:', error);
     return NextResponse.json(
@@ -43,16 +50,13 @@ export async function PUT(
     const { media, ...projectData } = body;
 
     // プロジェクトを更新
-    const project = await prisma.project.update({
+    await prisma.project.update({
       where: { id },
       data: {
         ...projectData,
         handoverDate: projectData.handoverDate ? new Date(projectData.handoverDate) : null,
         deadlineDate: projectData.deadlineDate ? new Date(projectData.deadlineDate) : null,
         lastUpdated: new Date(),
-      },
-      include: {
-        media: true,
       },
     });
 
@@ -70,13 +74,16 @@ export async function PUT(
             status: m.status,
             startDate: m.startDate ? new Date(m.startDate) : null,
             endDate: m.endDate ? new Date(m.endDate) : null,
+            updatedAt: new Date(),
           },
           create: {
+            id: crypto.randomUUID(),
             projectId: id,
             mediaName: m.mediaName,
             status: m.status || '未掲載',
             startDate: m.startDate ? new Date(m.startDate) : null,
             endDate: m.endDate ? new Date(m.endDate) : null,
+            updatedAt: new Date(),
           },
         });
       }
@@ -86,11 +93,18 @@ export async function PUT(
     const updatedProject = await prisma.project.findUnique({
       where: { id },
       include: {
-        media: true,
+        MediaManagement: true,
       },
     });
 
-    return NextResponse.json(updatedProject);
+    // レスポンス形式を整形
+    const formattedProject = updatedProject ? {
+      ...updatedProject,
+      media: updatedProject.MediaManagement,
+      MediaManagement: undefined,
+    } : null;
+
+    return NextResponse.json(formattedProject);
   } catch (error) {
     console.error('Failed to update project:', error);
     return NextResponse.json(
@@ -121,4 +135,3 @@ export async function DELETE(
     );
   }
 }
-

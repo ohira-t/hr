@@ -53,10 +53,34 @@ const categoryConfig: Record<string, {
     progressColor: 'bg-purple-500',
     lightBg: 'bg-purple-50',
   },
+  // フォールバック用（兼務・要確認など）
+  '兼務': {
+    icon: HandHeart,
+    gradient: 'from-gray-500 to-slate-600',
+    iconBg: 'bg-gray-500',
+    progressColor: 'bg-gray-500',
+    lightBg: 'bg-gray-50',
+  },
+  '要確認': {
+    icon: HandHeart,
+    gradient: 'from-amber-500 to-orange-600',
+    iconBg: 'bg-amber-500',
+    progressColor: 'bg-amber-500',
+    lightBg: 'bg-amber-50',
+  },
+};
+
+// デフォルト設定（未知のカテゴリ用）
+const defaultConfig = {
+  icon: HandHeart,
+  gradient: 'from-gray-500 to-slate-600',
+  iconBg: 'bg-gray-500',
+  progressColor: 'bg-gray-500',
+  lightBg: 'bg-gray-50',
 };
 
 export function MetricCard({ category, newStats, existingStats, index }: MetricCardProps) {
-  const config = categoryConfig[category];
+  const config = categoryConfig[category] || defaultConfig;
   const Icon = config.icon;
   
   const totalActive = newStats.activeProjects + existingStats.activeProjects;

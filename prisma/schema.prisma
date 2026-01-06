@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,70 +8,52 @@ datasource db {
   directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
-// 案件（プロジェクト）
-model Project {
-  id                  String   @id @default(cuid())
-  hrId                String   @unique // HR管理ID
-  segment             String   // 新規・既存
-  category            String   // 業態
-  
-  // クライアント情報
-  clientName          String
-  clientNameKana      String   @default("") // 補足
-  clientId            String   @default("")
-  applicationId       String   @default("")
-  
-  // 勤務地
-  prefecture          String   @default("")
-  city                String   @default("")
-  facilityName        String   @default("")
-  
-  // 募集内容
-  position            String   @default("サビ管")
-  employmentType      String   @default("正社員")
-  targetHiringCount   Int      @default(1)
-  currentHiringCount  Int      @default(0)
-  
-  // 社内管理
-  status              String   @default("採用活動中")
-  assignee            String   @default("")
-  department          String   @default("推進部")
-  handoverDate        DateTime?
-  deadlineDate        DateTime?
-  openingDate         String?
-  
-  // メモ
-  hurdles             String   @default("")
-  notes               String   @default("")
-  nextAction          String   @default("")
-  
-  // システム
-  createdAt           DateTime @default(now())
-  lastUpdated         DateTime @updatedAt
-  
-  // リレーション
-  media               MediaManagement[]
+model Assignee {
+  id       String  @id
+  name     String  @unique
+  isActive Boolean @default(true)
+  order    Int     @default(0)
 }
 
-// 媒体管理
 model MediaManagement {
-  id          String   @id @default(cuid())
-  projectId   String
-  mediaName   String   // 媒体名
-  status      String   @default("未掲載") // ステータス
-  startDate   DateTime?
-  endDate     DateTime?
-  updatedAt   DateTime @updatedAt
-  
-  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  
+  id        String    @id
+  projectId String
+  mediaName String
+  status    String    @default("未掲載")
+  startDate DateTime?
+  endDate   DateTime?
+  updatedAt DateTime
+  Project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
   @@unique([projectId, mediaName])
 }
 
-// 担当者マスタ
-model Assignee {
-  id        String  @id @default(cuid())
-  name      String  @unique
-  isActive  Boolean @default(true)
-  order     Int     @default(0)
+model Project {
+  id                 String            @id
+  hrId               String            @unique
+  segment            String
+  category           String
+  clientName         String
+  clientNameKana     String            @default("")
+  clientId           String            @default("")
+  applicationId      String            @default("")
+  prefecture         String            @default("")
+  city               String            @default("")
+  facilityName       String            @default("")
+  position           String            @default("サビ管")
+  employmentType     String            @default("正社員")
+  targetHiringCount  Int               @default(1)
+  currentHiringCount Int               @default(0)
+  status             String            @default("採用活動中")
+  assignee           String            @default("")
+  department         String            @default("推進部")
+  handoverDate       DateTime?
+  deadlineDate       DateTime?
+  openingDate        String?
+  hurdles            String            @default("")
+  notes              String            @default("")
+  nextAction         String            @default("")
+  createdAt          DateTime          @default(now())
+  lastUpdated        DateTime
+  MediaManagement    MediaManagement[]
 }

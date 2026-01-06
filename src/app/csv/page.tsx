@@ -306,7 +306,8 @@ export default function CSVPage() {
         success: result.success,
         updated: result.updated,
         created: result.created,
-        errors: result.errors?.map((e: string, i: number) => ({ row: i + 2, message: e })) || [],
+        // APIから返されるエラーメッセージをそのまま使用（行番号は既に含まれている）
+        errors: result.errors?.map((e: string, i: number) => ({ row: i, message: e })) || [],
       });
     } catch (error) {
       console.error('Import error:', error);
@@ -505,7 +506,7 @@ export default function CSVPage() {
                       </p>
                       <ul className="text-xs text-red-600 space-y-1">
                         {importResult.errors.slice(0, 5).map((error, i) => (
-                          <li key={i}>行 {error.row}: {error.message}</li>
+                          <li key={i}>{error.message}</li>
                         ))}
                         {importResult.errors.length > 5 && (
                           <li>...他 {importResult.errors.length - 5}件</li>

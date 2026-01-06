@@ -137,8 +137,23 @@ export async function POST(request: NextRequest) {
         result.success++;
       } catch (error) {
         console.error(`Row ${i + 2} error:`, error);
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        result.errors.push(`行${i + 2}: ${errorMessage}`);
+        let errorMessage = '処理中にエラーが発生しました';
+        if (error instanceof Error) {
+          // Prismaエラーの場合、より詳細な情報を抽出
+          if (error.message.includes('Unique constraint')) {
+            errorMessage = 'HR IDが重複しています';
+          } else if (error.message.includes('Foreign key constraint')) {
+            errorMessage = '関連データが見つかりません';
+          } else if (error.message.includes('Invalid')) {
+            errorMessage = `データ形式が無効です: ${error.message}`;
+          } else if (error.message.includes('connect')) {
+            errorMessage = 'データベース接続エラー';
+          } else {
+            // その他のエラーはそのまま表示
+            errorMessage = error.message.substring(0, 100); // 長すぎる場合は切り詰め
+          }
+        }
+        result.errors.push(`行 ${i + 2}: ${errorMessage}`);
         result.failed++;
       }
     }

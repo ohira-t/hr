@@ -6,14 +6,21 @@ export async function GET() {
   try {
     const projects = await prisma.project.findMany({
       include: {
-        media: true,
+        MediaManagement: true,
       },
       orderBy: {
         lastUpdated: 'desc',
       },
     });
 
-    return NextResponse.json(projects);
+    // レスポンス形式を整形（MediaManagement -> media）
+    const formattedProjects = projects.map(project => ({
+      ...project,
+      media: project.MediaManagement,
+      MediaManagement: undefined,
+    }));
+
+    return NextResponse.json(formattedProjects);
   } catch (error) {
     console.error('Failed to fetch projects:', error);
     return NextResponse.json(
@@ -35,21 +42,30 @@ export async function POST(request: NextRequest) {
         ...projectData,
         handoverDate: projectData.handoverDate ? new Date(projectData.handoverDate) : null,
         deadlineDate: projectData.deadlineDate ? new Date(projectData.deadlineDate) : null,
-        media: media ? {
+        MediaManagement: media ? {
           create: media.map((m: { mediaName: string; status: string; startDate?: string; endDate?: string }) => ({
+            id: crypto.randomUUID(),
             mediaName: m.mediaName,
             status: m.status || '未掲載',
             startDate: m.startDate ? new Date(m.startDate) : null,
             endDate: m.endDate ? new Date(m.endDate) : null,
+            updatedAt: new Date(),
           })),
         } : undefined,
       },
       include: {
-        media: true,
+        MediaManagement: true,
       },
     });
 
-    return NextResponse.json(project, { status: 201 });
+    // レスポンス形式を整形
+    const formattedProject = {
+      ...project,
+      media: project.MediaManagement,
+      MediaManagement: undefined,
+    };
+
+    return NextResponse.json(formattedProject, { status: 201 });
   } catch (error) {
     console.error('Failed to create project:', error);
     return NextResponse.json(
@@ -58,4 +74,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
 
