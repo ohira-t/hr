@@ -92,19 +92,24 @@ export function SegmentAnalytics({ projects }: AnalyticsCardsProps) {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-gray-900">
+                <div className="flex items-center gap-4">
+                  <div className="flex flex-col items-end gap-0.5 min-w-[80px]">
+                    <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                       {stat.hired}/{stat.target}名
                     </p>
-                    <p className={cn(
-                      'text-xs font-medium',
-                      rate >= 80 ? 'text-emerald-600' : rate >= 50 ? 'text-amber-600' : 'text-gray-500'
-                    )}>
-                      {rate.toFixed(0)}%達成
-                    </p>
+                    <div className="flex items-baseline gap-1">
+                      <span className={cn(
+                        'text-lg font-bold tabular-nums',
+                        rate >= 80 ? 'text-emerald-600' : rate >= 50 ? 'text-amber-600' : 'text-gray-600'
+                      )}>
+                        {rate.toFixed(0)}%
+                      </span>
+                      <span className="text-[10px] font-medium text-gray-400 whitespace-nowrap">
+                        達成
+                      </span>
+                    </div>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                  <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors shrink-0" />
                 </div>
               </Link>
             );
