@@ -84,14 +84,37 @@ export default function NewProjectPage() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // TODO: 実際のAPI呼び出し
-    console.log('Form Data:', formData);
-    console.log('Media Data:', mediaData);
-    
-    // モック: 保存完了後に一覧に戻る
-    setTimeout(() => {
+    try {
+      // APIにプロジェクトを作成
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          handoverDate: formData.handoverDate || null,
+          deadlineDate: formData.deadlineDate || null,
+          media: mediaData.filter(m => m.status !== '未掲載').map(m => ({
+            mediaName: m.mediaName,
+            status: m.status,
+            startDate: m.startDate || null,
+            endDate: m.endDate || null,
+          })),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create project');
+      }
+
+      // 保存完了後に一覧に戻る
       router.push('/projects');
-    }, 500);
+    } catch (error) {
+      console.error('Error creating project:', error);
+      alert('保存に失敗しました。もう一度お試しください。');
+      setIsSubmitting(false);
+    }
   };
 
   return (

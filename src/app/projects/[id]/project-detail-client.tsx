@@ -55,13 +55,39 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
   const handleSave = async () => {
     setIsSubmitting(true);
-    // TODO: API呼び出し
-    console.log('Saving project:', editedProject);
-    setTimeout(() => {
+    
+    try {
+      // APIにプロジェクトを更新
+      const response = await fetch(`/api/projects/${editedProject.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...editedProject,
+          handoverDate: editedProject.handoverDate?.toISOString() || null,
+          deadlineDate: editedProject.deadlineDate?.toISOString() || null,
+          media: editedProject.media.map(m => ({
+            mediaName: m.mediaName,
+            status: m.status,
+            startDate: m.startDate?.toISOString() || null,
+            endDate: m.endDate?.toISOString() || null,
+          })),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update project');
+      }
+
       setProject(editedProject);
       setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating project:', error);
+      alert('保存に失敗しました。もう一度お試しください。');
+    } finally {
       setIsSubmitting(false);
-    }, 500);
+    }
   };
 
   const handleCancel = () => {
