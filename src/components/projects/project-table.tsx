@@ -125,73 +125,70 @@ export function ProjectTable({
 
   const columns = useMemo(() => [
     columnHelper.accessor('segment', {
-      header: '',
+      header: 'セグメント',
       cell: (info) => (
         <Badge 
           variant="outline" 
-          className={cn('text-[10px] px-1.5 py-0', getSegmentColor(info.getValue()))}
+          className={cn('text-[11px] px-2 py-0.5 whitespace-nowrap', getSegmentColor(info.getValue()))}
         >
           {info.getValue()}
         </Badge>
       ),
-      size: 60,
+      size: 90,
     }),
     columnHelper.accessor('hrId', {
       header: 'HR ID',
       cell: (info) => (
-        <span className="font-mono text-xs text-gray-500">{info.getValue()}</span>
+        <span className="font-mono text-[13px] text-gray-600 whitespace-nowrap">{info.getValue()}</span>
       ),
       size: 100,
     }),
     columnHelper.accessor('clientName', {
       header: 'クライアント名',
       cell: (info) => (
-        <div className="max-w-[200px]">
-          <p className="truncate text-sm font-medium text-gray-900">{info.getValue()}</p>
-          <p className="truncate text-xs text-gray-500">
+        <div className="min-w-[180px]">
+          <p className="text-[13px] font-medium text-gray-900 whitespace-nowrap">{info.getValue()}</p>
+          <p className="text-[12px] text-gray-500 whitespace-nowrap">
             {info.row.original.position} · {info.row.original.employmentType}
           </p>
         </div>
       ),
-      size: 220,
+      size: 240,
     }),
     columnHelper.accessor('category', {
       header: '業態',
       cell: (info) => (
         <Badge 
           variant="outline" 
-          className={cn('text-[10px] px-1.5 py-0', getCategoryColor(info.getValue()))}
+          className={cn('text-[11px] px-2 py-0.5 whitespace-nowrap', getCategoryColor(info.getValue()))}
         >
           {info.getValue()}
         </Badge>
       ),
-      size: 70,
+      size: 80,
     }),
     columnHelper.accessor('prefecture', {
       header: 'エリア',
       cell: (info) => (
-        <div>
-          <p className="text-sm text-gray-900">{info.getValue()}</p>
-          {info.row.original.city && (
-            <p className="text-xs text-gray-500 mt-0.5">{info.row.original.city}</p>
-          )}
-        </div>
+        <span className="text-[13px] text-gray-900 whitespace-nowrap">
+          {info.getValue()}{info.row.original.city ? ` ${info.row.original.city}` : ''}
+        </span>
       ),
-      size: 120,
+      size: 160,
     }),
     columnHelper.accessor('handoverDate', {
-      header: '経過',
+      header: '経過日数',
       cell: (info) => {
         const dateInfo = calculateDateInfo(info.getValue(), info.row.original.deadlineDate);
         return (
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2 whitespace-nowrap">
             {dateInfo.isSlow && (
-              <Badge className="bg-amber-100 text-amber-700 border-0 text-[9px] px-1 py-0 whitespace-nowrap">
+              <Badge className="bg-amber-100 text-amber-700 border-0 text-[10px] px-1.5 py-0">
                 Slow
               </Badge>
             )}
             <span className={cn(
-              'text-xs whitespace-nowrap',
+              'text-[13px]',
               dateInfo.isSlow ? 'text-amber-600 font-medium' : 'text-gray-600'
             )}>
               {formatElapsedDays(dateInfo.elapsedDays)}
@@ -199,47 +196,47 @@ export function ProjectTable({
           </div>
         );
       },
-      size: 100,
+      size: 120,
     }),
     columnHelper.accessor('deadlineDate', {
       header: '期限',
       cell: (info) => {
         const dateInfo = calculateDateInfo(info.row.original.handoverDate, info.getValue());
         return (
-          <div>
-            <p className={cn(
-              'text-xs font-medium',
+          <div className="whitespace-nowrap">
+            <span className={cn(
+              'text-[13px] font-medium',
               dateInfo.isOverdue ? 'text-red-600' :
               dateInfo.isUrgent ? 'text-amber-600' : 'text-gray-600'
             )}>
               {formatRemainingDays(dateInfo.remainingDays)}
-            </p>
-            <p className="text-[10px] text-gray-400">
-              {info.getValue() ? formatDate(info.getValue()) : '-'}
-            </p>
+            </span>
+            <span className="text-[12px] text-gray-400 ml-2">
+              {info.getValue() ? formatDate(info.getValue()) : ''}
+            </span>
           </div>
         );
       },
-      size: 100,
+      size: 160,
     }),
     columnHelper.accessor('media', {
-      header: '媒体',
+      header: '掲載媒体',
       cell: (info) => <MediaMatrix media={info.getValue()} compact />,
-      size: 150,
+      size: 180,
     }),
     columnHelper.accessor('status', {
       header: 'ステータス',
       cell: (info) => (
-        <Badge className={cn('text-[10px]', getStatusColor(info.getValue()))}>
+        <Badge className={cn('text-[11px] whitespace-nowrap', getStatusColor(info.getValue()))}>
           {info.getValue()}
         </Badge>
       ),
-      size: 100,
+      size: 110,
     }),
     columnHelper.accessor('assignee', {
-      header: '担当',
+      header: '担当者',
       cell: (info) => (
-        <span className="text-sm text-gray-600 whitespace-nowrap">{info.getValue()}</span>
+        <span className="text-[13px] text-gray-700 whitespace-nowrap">{info.getValue()}</span>
       ),
       size: 80,
     }),
@@ -248,16 +245,14 @@ export function ProjectTable({
       cell: (info) => {
         const value = info.getValue();
         return value ? (
-          <div className="min-w-[180px] max-w-[280px]">
-            <p className="text-sm text-gray-700 line-clamp-2" title={value}>
-              {value}
-            </p>
-          </div>
+          <p className="text-[13px] text-gray-700 whitespace-nowrap max-w-[300px] truncate" title={value}>
+            {value}
+          </p>
         ) : (
-          <span className="text-xs text-gray-400">-</span>
+          <span className="text-[12px] text-gray-400">—</span>
         );
       },
-      size: 220,
+      size: 300,
     }),
     columnHelper.display({
       id: 'actions',
@@ -265,13 +260,13 @@ export function ProjectTable({
       cell: (info) => (
         <Link 
           href={`/projects/${info.row.original.id}`}
-          className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 inline-flex"
+          className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 inline-flex"
           onClick={(e) => e.stopPropagation()}
         >
           <ExternalLink className="h-4 w-4" />
         </Link>
       ),
-      size: 50,
+      size: 48,
     }),
   ], []);
 
@@ -289,22 +284,22 @@ export function ProjectTable({
 
   return (
     <div className="overflow-hidden rounded-2xl bg-white card-shadow">
-      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
-        <table className="w-full min-w-[1200px]">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[1600px]">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="border-b border-gray-100">
+              <tr key={headerGroup.id} className="border-b border-gray-200/80 bg-gray-50/50">
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                    className="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap"
                     style={{ width: header.getSize() }}
                   >
                     {header.isPlaceholder ? null : (
                       <div
                         className={cn(
-                          'flex items-center gap-1',
-                          header.column.getCanSort() && 'cursor-pointer select-none hover:text-gray-900'
+                          'flex items-center gap-1.5',
+                          header.column.getCanSort() && 'cursor-pointer select-none hover:text-gray-900 transition-colors'
                         )}
                         onClick={header.column.getToggleSortingHandler()}
                       >
@@ -315,7 +310,7 @@ export function ProjectTable({
                               asc: <ChevronUp className="h-3.5 w-3.5" />,
                               desc: <ChevronDown className="h-3.5 w-3.5" />,
                             }[header.column.getIsSorted() as string] ?? (
-                              <ChevronsUpDown className="h-3.5 w-3.5 opacity-50" />
+                              <ChevronsUpDown className="h-3.5 w-3.5 opacity-40" />
                             )}
                           </span>
                         )}
@@ -338,7 +333,7 @@ export function ProjectTable({
                 <tr
                   key={row.id}
                   className={cn(
-                    'border-b border-gray-50 transition-colors hover:bg-gray-50/50 cursor-pointer',
+                    'border-b border-gray-100/80 transition-colors hover:bg-blue-50/30 cursor-pointer',
                     'opacity-0 animate-fade-in',
                     index < 5 && `stagger-${index + 1}`
                   )}
@@ -348,7 +343,7 @@ export function ProjectTable({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-4 py-3"
+                      className="px-5 py-4"
                       style={{ width: cell.column.getSize() }}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -362,12 +357,12 @@ export function ProjectTable({
       </div>
 
       {/* Summary Footer */}
-      <div className="border-t border-gray-100 bg-gray-50/50 px-4 py-3">
-        <p className="text-sm text-gray-500">
-          {filteredProjects.length}件の案件を表示中
+      <div className="border-t border-gray-200/80 bg-gray-50/50 px-5 py-3.5">
+        <p className="text-[13px] text-gray-600">
+          <span className="font-medium">{filteredProjects.length}件</span>の案件を表示中
           {hasFilters && (
             <span className="ml-2 text-gray-400">
-              (フィルター適用中)
+              （フィルター適用中）
             </span>
           )}
         </p>
