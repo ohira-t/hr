@@ -81,7 +81,7 @@ export function MetricCard({ category, newStats, existingStats, index }: MetricC
               <Icon className="h-5 w-5 text-white" />
             </div>
             <div>
-              <CardTitle className="text-base font-semibold text-gray-900">
+              <CardTitle className="text-sm font-semibold text-gray-900">
                 {getCategoryLabel(category)}
               </CardTitle>
               <p className="text-xs text-gray-500">
@@ -96,12 +96,12 @@ export function MetricCard({ category, newStats, existingStats, index }: MetricC
         {/* Overall Progress */}
         <div>
           <div className="mb-2 flex items-baseline justify-between">
-            <span className="text-3xl font-bold tracking-tight text-gray-900">
+            <span className="text-2xl font-bold tracking-tight text-gray-900">
               {totalCurrent}
-              <span className="ml-1 text-lg font-normal text-gray-400">/ {totalTarget}</span>
+              <span className="ml-1 text-base font-normal text-gray-400">/ {totalTarget}</span>
             </span>
             <span className={cn(
-              'text-sm font-semibold',
+              'text-xs font-semibold',
               totalRate >= 80 ? 'text-emerald-600' : 
               totalRate >= 50 ? 'text-amber-600' : 'text-gray-500'
             )}>
@@ -125,7 +125,7 @@ export function MetricCard({ category, newStats, existingStats, index }: MetricC
               </Badge>
               <span className="text-xs text-gray-500">{newStats.activeProjects}件</span>
             </div>
-            <p className="mt-1.5 text-lg font-semibold text-gray-900">
+            <p className="mt-1.5 text-base font-semibold text-gray-900">
               {newStats.currentHirings}/{newStats.targetHirings}
             </p>
           </div>
@@ -136,7 +136,7 @@ export function MetricCard({ category, newStats, existingStats, index }: MetricC
               </Badge>
               <span className="text-xs text-gray-500">{existingStats.activeProjects}件</span>
             </div>
-            <p className="mt-1.5 text-lg font-semibold text-gray-900">
+            <p className="mt-1.5 text-base font-semibold text-gray-900">
               {existingStats.currentHirings}/{existingStats.targetHirings}
             </p>
           </div>

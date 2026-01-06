@@ -32,9 +32,7 @@ export function HiringChart({ data }: HiringChartProps) {
             <TrendingUp className="h-4 w-4 text-indigo-500" />
           </div>
           <div>
-            <CardTitle className="text-base font-semibold text-gray-900">
-              採用進捗状況
-            </CardTitle>
+            <CardTitle className="text-sm">採用進捗状況</CardTitle>
             <p className="text-xs text-gray-500">業態別・セグメント別の採用数</p>
           </div>
         </div>

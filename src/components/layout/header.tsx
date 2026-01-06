@@ -12,9 +12,9 @@ export function Header({ title, subtitle }: HeaderProps) {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200/60 bg-white/80 px-8 glass-effect">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-gray-900">{title}</h1>
+        <h1 className="text-lg font-semibold tracking-tight text-gray-900">{title}</h1>
         {subtitle && (
-          <p className="text-sm text-gray-500">{subtitle}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>
         )}
       </div>
       

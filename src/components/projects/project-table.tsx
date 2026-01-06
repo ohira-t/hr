@@ -100,7 +100,7 @@ export function ProjectTable({
       header: 'クライアント名',
       cell: (info) => (
         <div className="max-w-[200px]">
-          <p className="truncate font-medium text-gray-900">{info.getValue()}</p>
+          <p className="truncate text-sm font-medium text-gray-900">{info.getValue()}</p>
           <p className="truncate text-xs text-gray-500">
             {info.row.original.position} · {info.row.original.employmentType}
           </p>

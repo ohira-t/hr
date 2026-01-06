@@ -22,7 +22,7 @@ export function SlowProjects({ projects }: SlowProjectsProps) {
             <Hourglass className="h-4 w-4 text-amber-500" />
           </div>
           <div>
-            <CardTitle className="text-base font-semibold text-gray-900">
+            <CardTitle className="text-sm font-semibold text-gray-900">
               長期対応中の案件
             </CardTitle>
             <p className="text-xs text-gray-500">引継から30日以上経過</p>

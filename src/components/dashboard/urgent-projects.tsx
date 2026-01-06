@@ -22,7 +22,7 @@ export function UrgentProjects({ projects }: UrgentProjectsProps) {
             <AlertTriangle className="h-4 w-4 text-red-500" />
           </div>
           <div>
-            <CardTitle className="text-base font-semibold text-gray-900">
+            <CardTitle className="text-sm font-semibold text-gray-900">
               期限間近の案件
             </CardTitle>
             <p className="text-xs text-gray-500">14日以内に期限を迎える案件</p>

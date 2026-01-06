@@ -83,7 +83,7 @@ export default function SettingsPage() {
                 <Target className="h-5 w-5 text-white" />
               </div>
               <div>
-                <CardTitle className="text-lg">採用目標設定</CardTitle>
+                <CardTitle className="text-sm font-semibold">採用目標設定</CardTitle>
                 <CardDescription>
                   業態・セグメント別の採用目標人数を設定します
                 </CardDescription>
