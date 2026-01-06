@@ -88,7 +88,7 @@ export function SegmentAnalytics({ projects }: AnalyticsCardsProps) {
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-gray-900 truncate">{stat.label}案件</p>
                     <p className="text-xs text-gray-500 whitespace-nowrap">
-                      稼働 {stat.active}件・全{stat.count}件
+                      稼働 {stat.active}/{stat.count}
                     </p>
                   </div>
                 </div>
