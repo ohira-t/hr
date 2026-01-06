@@ -13,15 +13,17 @@ import {
   type SortingState,
 } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
-import { MediaMatrix } from './media-matrix';
 import { cn } from '@/lib/utils';
 import { getCategoryColor, getSegmentColor, getStatusColor } from '@/lib/category-utils';
 import { calculateDateInfo, formatElapsedDays, formatRemainingDays, formatDate } from '@/lib/date-utils';
 import type { Project, Category, Segment, ProjectStatus, MediaName, Position, EmploymentType } from '@/types/database';
 import { ChevronDown, ChevronUp, ChevronsUpDown, ExternalLink } from 'lucide-react';
 
+// 一覧用の軽量Project型
+type ProjectLite = Omit<Project, 'media' | 'clientId' | 'applicationId' | 'city' | 'facilityName' | 'openingDate' | 'hurdles' | 'notes' | 'nextAction' | 'createdAt'>;
+
 interface ProjectTableProps {
-  projects: Project[];
+  projects: ProjectLite[];
   categoryFilter: Category | 'all';
   segmentFilter: Segment | 'all';
   statusFilter: ProjectStatus | 'all';
@@ -33,7 +35,7 @@ interface ProjectTableProps {
   sortBy: 'deadline' | 'elapsed' | 'updated' | 'client';
 }
 
-const columnHelper = createColumnHelper<Project>();
+const columnHelper = createColumnHelper<ProjectLite>();
 
 export function ProjectTable({
   projects,
@@ -61,8 +63,8 @@ export function ProjectTable({
         p.hrId.toLowerCase().includes(query) ||
         p.clientName.toLowerCase().includes(query) ||
         p.prefecture.toLowerCase().includes(query) ||
-        p.city.toLowerCase().includes(query) ||
-        p.position.toLowerCase().includes(query)
+        p.position.toLowerCase().includes(query) ||
+        p.assignee.toLowerCase().includes(query)
       );
     }
 
@@ -90,14 +92,8 @@ export function ProjectTable({
     if (employmentTypeFilter !== 'all') {
       result = result.filter(p => p.employmentType === employmentTypeFilter);
     }
-    // 媒体フィルタ（複数選択 - いずれかの媒体が募集中なら表示）
-    if (mediaFilter.length > 0) {
-      result = result.filter(p => 
-        p.media.some(m => 
-          mediaFilter.includes(m.mediaName) && m.status === '募集中'
-        )
-      );
-    }
+    // 媒体フィルタ - 軽量版では無効（詳細ページで確認可能）
+    // mediaFilter は現在使用されていませんが、将来のためにpropsは残しています
 
     // ソート
     result.sort((a, b) => {
@@ -121,7 +117,7 @@ export function ProjectTable({
     });
 
     return result;
-  }, [projects, categoryFilter, segmentFilter, statusFilter, assigneeFilter, mediaFilter, searchQuery, sortBy]);
+  }, [projects, categoryFilter, segmentFilter, statusFilter, assigneeFilter, positionFilter, employmentTypeFilter, searchQuery, sortBy]);
 
   const columns = useMemo(() => [
     columnHelper.accessor('segment', {
@@ -170,14 +166,9 @@ export function ProjectTable({
     columnHelper.accessor('prefecture', {
       header: 'エリア',
       cell: (info) => (
-        <div className="min-w-[100px]">
-          <p className="text-[13px] text-gray-900">{info.getValue()}</p>
-          {info.row.original.city && (
-            <p className="text-[12px] text-gray-500">{info.row.original.city}</p>
-          )}
-        </div>
+        <p className="text-[13px] text-gray-900 min-w-[80px]">{info.getValue() || '—'}</p>
       ),
-      size: 120,
+      size: 100,
     }),
     columnHelper.accessor('handoverDate', {
       header: '経過',
@@ -224,11 +215,6 @@ export function ProjectTable({
       },
       size: 110,
     }),
-    columnHelper.accessor('media', {
-      header: '掲載媒体',
-      cell: (info) => <MediaMatrix media={info.getValue()} compact />,
-      size: 160,
-    }),
     columnHelper.accessor('status', {
       header: 'ステータス',
       cell: (info) => (
@@ -244,20 +230,6 @@ export function ProjectTable({
         <span className="text-[13px] text-gray-700 whitespace-nowrap">{info.getValue()}</span>
       ),
       size: 80,
-    }),
-    columnHelper.accessor('nextAction', {
-      header: '次アクション',
-      cell: (info) => {
-        const value = info.getValue();
-        return value ? (
-          <p className="text-[13px] text-gray-700 whitespace-nowrap max-w-[300px] truncate" title={value}>
-            {value}
-          </p>
-        ) : (
-          <span className="text-[12px] text-gray-400">—</span>
-        );
-      },
-      size: 300,
     }),
     columnHelper.display({
       id: 'actions',

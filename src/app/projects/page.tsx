@@ -8,22 +8,18 @@ import { Header } from '@/components/layout/header';
 import { FilterBar } from '@/components/projects/filter-bar';
 import { ProjectTable } from '@/components/projects/project-table';
 import { Button } from '@/components/ui/button';
-import type { Category, Segment, ProjectStatus, MediaName, Position, EmploymentType, Project, MediaManagement, Department, TargetPeriod } from '@/types/database';
-import { CATEGORIES, SEGMENTS, MEDIA_NAMES } from '@/types/database';
+import type { Category, Segment, ProjectStatus, MediaName, Position, EmploymentType, Project, Department, TargetPeriod } from '@/types/database';
+import { CATEGORIES, SEGMENTS } from '@/types/database';
 
-// APIレスポンスの型
-interface ApiProject {
+// 一覧用軽量APIレスポンスの型
+interface ApiProjectLite {
   id: string;
   hrId: string;
   segment: string;
   category: string;
   clientName: string;
   clientNameKana: string;
-  clientId: string;
-  applicationId: string;
   prefecture: string;
-  city: string;
-  facilityName: string;
   position: string;
   employmentType: string;
   targetHiringCount: number;
@@ -34,40 +30,14 @@ interface ApiProject {
   targetPeriod: string | null;
   handoverDate: string | null;
   deadlineDate: string | null;
-  openingDate: string | null;
-  hurdles: string;
-  notes: string;
-  nextAction: string;
-  createdAt: string;
   lastUpdated: string;
-  media: {
-    id: string;
-    projectId: string;
-    mediaName: string;
-    status: string;
-    startDate: string | null;
-    endDate: string | null;
-    updatedAt: string;
-  }[];
 }
 
-// APIレスポンスをProject型に変換
-function convertApiToProject(api: ApiProject): Project {
-  // 全メディアのリストを作成（APIにあるものは使用、ないものは未掲載）
-  const mediaMap = new Map(api.media.map(m => [m.mediaName, m]));
-  const allMedia: MediaManagement[] = MEDIA_NAMES.map(mediaName => {
-    const existing = mediaMap.get(mediaName);
-    return {
-      id: existing?.id || `${api.id}-${mediaName}`,
-      projectId: api.id,
-      mediaName: mediaName as MediaName,
-      status: (existing?.status || '未掲載') as MediaManagement['status'],
-      startDate: existing?.startDate ? new Date(existing.startDate) : null,
-      endDate: existing?.endDate ? new Date(existing.endDate) : null,
-      updatedAt: existing ? new Date(existing.updatedAt) : new Date(),
-    };
-  });
+// 一覧用の軽量Project型（メディア情報なし）
+type ProjectLite = Omit<Project, 'media' | 'clientId' | 'applicationId' | 'city' | 'facilityName' | 'openingDate' | 'hurdles' | 'notes' | 'nextAction' | 'createdAt'>;
 
+// APIレスポンスをProjectLite型に変換（軽量版）
+function convertApiToProjectLite(api: ApiProjectLite): ProjectLite {
   return {
     id: api.id,
     hrId: api.hrId,
@@ -75,11 +45,7 @@ function convertApiToProject(api: ApiProject): Project {
     category: api.category as Category,
     clientName: api.clientName,
     clientNameKana: api.clientNameKana,
-    clientId: api.clientId,
-    applicationId: api.applicationId,
     prefecture: api.prefecture,
-    city: api.city,
-    facilityName: api.facilityName,
     position: api.position as Position,
     employmentType: api.employmentType as EmploymentType,
     targetHiringCount: api.targetHiringCount,
@@ -90,20 +56,14 @@ function convertApiToProject(api: ApiProject): Project {
     targetPeriod: api.targetPeriod as TargetPeriod | null,
     handoverDate: api.handoverDate ? new Date(api.handoverDate) : null,
     deadlineDate: api.deadlineDate ? new Date(api.deadlineDate) : null,
-    openingDate: api.openingDate,
-    hurdles: api.hurdles,
-    notes: api.notes,
-    nextAction: api.nextAction,
-    createdAt: new Date(api.createdAt),
     lastUpdated: new Date(api.lastUpdated),
-    media: allMedia,
   };
 }
 
 function ProjectsContent() {
   const searchParams = useSearchParams();
   
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectLite[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<Category | 'all'>('all');
@@ -115,14 +75,14 @@ function ProjectsContent() {
   const [mediaFilter, setMediaFilter] = useState<MediaName[]>([]);
   const [sortBy, setSortBy] = useState<'deadline' | 'elapsed' | 'updated' | 'client'>('deadline');
 
-  // APIからプロジェクト一覧を取得
+  // APIからプロジェクト一覧を取得（軽量版）
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const response = await fetch('/api/projects');
+        const response = await fetch('/api/projects?lite=true');
         if (!response.ok) throw new Error('Failed to fetch projects');
-        const data: ApiProject[] = await response.json();
-        setProjects(data.map(convertApiToProject));
+        const data: ApiProjectLite[] = await response.json();
+        setProjects(data.map(convertApiToProjectLite));
       } catch (error) {
         console.error('Error fetching projects:', error);
       } finally {

@@ -2,8 +2,49 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 // GET /api/projects - プロジェクト一覧を取得
-export async function GET() {
+// ?lite=true で軽量版（メディア情報なし）を取得
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const isLite = searchParams.get('lite') === 'true';
+
+    if (isLite) {
+      // 軽量版: 一覧表示用（メディア情報なし、必要なフィールドのみ）
+      const projects = await prisma.project.findMany({
+        select: {
+          id: true,
+          hrId: true,
+          segment: true,
+          category: true,
+          clientName: true,
+          clientNameKana: true,
+          prefecture: true,
+          position: true,
+          employmentType: true,
+          targetHiringCount: true,
+          currentHiringCount: true,
+          status: true,
+          assignee: true,
+          department: true,
+          targetPeriod: true,
+          handoverDate: true,
+          deadlineDate: true,
+          lastUpdated: true,
+        },
+        orderBy: {
+          lastUpdated: 'desc',
+        },
+      });
+
+      // キャッシュヘッダーを追加（60秒間キャッシュ）
+      return NextResponse.json(projects, {
+        headers: {
+          'Cache-Control': 'private, max-age=60, stale-while-revalidate=120',
+        },
+      });
+    }
+
+    // 通常版: 全フィールド + メディア情報
     const projects = await prisma.project.findMany({
       include: {
         MediaManagement: true,
