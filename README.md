@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Talent Flow - HR管理システム
 
-## Getting Started
+HR部の採用業務を効率的に管理するためのWebアプリケーションです。
 
-First, run the development server:
+## 機能
+
+- **ダッシュボード**: 全体の採用状況を一目で把握
+  - 業態別（就労継続支援・GH・訪問看護）の採用進捗
+  - 新規/既存セグメント別の管理
+  - 期限間近・長期対応中の案件アラート
+
+- **案件一覧**: 全採用案件の詳細管理
+  - フィルター機能（業態・セグメント・ステータス）
+  - ソート機能（期限順・経過日数順・更新順・五十音順）
+  - 媒体マトリックス表示
+
+- **設定**: 採用目標数値の設定
+
+## 技術スタック
+
+- **フレームワーク**: Next.js 16 (App Router)
+- **UI**: Tailwind CSS, shadcn/ui
+- **チャート**: Recharts
+- **テーブル**: TanStack Table
+- **アイコン**: Lucide React
+
+## セットアップ
 
 ```bash
+# 依存関係のインストール
+npm install
+
+# 開発サーバーの起動
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# 本番ビルド
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## さくらインターネットへのデプロイ
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. 静的ビルドを実行:
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. `out` フォルダ内の全ファイルをサーバーにアップロード
 
-## Learn More
+3. `.htaccess` ファイルを作成（必要に応じて）:
+```apache
+# 404エラー時のリダイレクト
+ErrorDocument 404 /404.html
 
-To learn more about Next.js, take a look at the following resources:
+# trailingSlashの設定
+DirectorySlash On
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## フォルダ構成
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/              # Next.js App Router ページ
+│   ├── page.tsx      # ダッシュボード
+│   ├── projects/     # 案件一覧
+│   └── settings/     # 設定
+├── components/       # UIコンポーネント
+│   ├── dashboard/    # ダッシュボード用
+│   ├── layout/       # レイアウト
+│   ├── projects/     # 案件一覧用
+│   └── ui/           # 汎用UI (shadcn)
+├── data/             # モックデータ
+├── lib/              # ユーティリティ関数
+└── types/            # TypeScript型定義
+```
 
-## Deploy on Vercel
+## 業務ロジック
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### セグメント判定
+- **新規**: 開業予定日が未来、またはステータスが「未着手」
+- **既存**: 開業済み、またはそれ以外
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 日付計算
+- **経過日数**: 今日 - 引継日
+- **残り日数**: 採用期日 - 今日
+- **Slowバッジ**: 経過日数 > 30日
+- **緊急表示**: 残り日数 ≤ 14日
+
+### 業態マッピング
+- **就労**: Ａ型、Ｂ型、就労継続支援
+- **GH**: ＧＨ、グループホーム
+- **看護**: 訪問看護ステーション、育み看護
+
+## 今後の拡張予定
+
+- [ ] Supabaseとの連携（データベース）
+- [ ] CSVインポート機能
+- [ ] 詳細編集画面
+- [ ] 通知機能
+
+---
+
+© 2025 HR部 業務管理システム

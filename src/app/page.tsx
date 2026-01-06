@@ -1,65 +1,109 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { Header } from '@/components/layout/header';
+import { MetricCard } from '@/components/dashboard/metric-card';
+import { UrgentProjects } from '@/components/dashboard/urgent-projects';
+import { SlowProjects } from '@/components/dashboard/slow-projects';
+import { HiringChart } from '@/components/dashboard/hiring-chart';
+import { mockProjects, calculateStats, getUrgentProjects, getSlowProjects } from '@/data/mock-projects';
+import type { Category } from '@/types/database';
+
+export default function DashboardPage() {
+  const stats = calculateStats();
+  const urgentProjects = getUrgentProjects(5);
+  const slowProjects = getSlowProjects(5);
+  
+  // カテゴリー別にスタッツを整理
+  const categories: Category[] = ['就労', 'GH', '看護'];
+  
+  const categoryStats = categories.map((category) => {
+    const newStats = stats.find(s => s.category === category && s.segment === '新規') || {
+      activeProjects: 0, targetHirings: 0, currentHirings: 0, hiringRate: 0
+    };
+    const existingStats = stats.find(s => s.category === category && s.segment === '既存') || {
+      activeProjects: 0, targetHirings: 0, currentHirings: 0, hiringRate: 0
+    };
+    return { category, newStats, existingStats };
+  });
+
+  // チャート用データ
+  const chartData = categories.map((category) => {
+    const newStats = stats.find(s => s.category === category && s.segment === '新規');
+    const existingStats = stats.find(s => s.category === category && s.segment === '既存');
+    return {
+      category: category === 'GH' ? 'グループホーム' : category === '就労' ? '就労支援' : '訪問看護',
+      新規: newStats?.currentHirings || 0,
+      既存: existingStats?.currentHirings || 0,
+    };
+  });
+
+  // サマリー数値
+  const totalActive = mockProjects.filter(p => p.status === '採用活動中').length;
+  const totalTarget = mockProjects.reduce((sum, p) => sum + p.targetHiringCount, 0);
+  const totalCurrent = mockProjects.reduce((sum, p) => sum + p.currentHiringCount, 0);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <Header 
+        title="ダッシュボード" 
+        subtitle={`アクティブ案件: ${totalActive}件 | 採用目標: ${totalCurrent}/${totalTarget}名`}
+      />
+      
+      <div className="p-6 lg:p-8">
+        {/* Quick Stats */}
+        <div className="mb-6 lg:mb-8 grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+          <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 p-4 lg:p-6 text-white opacity-0 animate-fade-in">
+            <p className="text-[10px] lg:text-xs font-medium text-gray-400 uppercase tracking-wider whitespace-nowrap">アクティブ案件</p>
+            <p className="mt-1 lg:mt-2 text-2xl lg:text-3xl font-bold">{totalActive}<span className="text-sm lg:text-base font-normal text-gray-400 ml-1">件</span></p>
+          </div>
+          <div className="rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 p-4 lg:p-6 text-white opacity-0 animate-fade-in stagger-1">
+            <p className="text-[10px] lg:text-xs font-medium text-emerald-100 uppercase tracking-wider whitespace-nowrap">採用目標</p>
+            <p className="mt-1 lg:mt-2 text-2xl lg:text-3xl font-bold">{totalTarget}<span className="text-sm lg:text-base font-normal text-emerald-200 ml-1">名</span></p>
+          </div>
+          <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-4 lg:p-6 text-white opacity-0 animate-fade-in stagger-2">
+            <p className="text-[10px] lg:text-xs font-medium text-blue-100 uppercase tracking-wider whitespace-nowrap">採用済み</p>
+            <p className="mt-1 lg:mt-2 text-2xl lg:text-3xl font-bold">{totalCurrent}<span className="text-sm lg:text-base font-normal text-blue-200 ml-1">名</span></p>
+          </div>
+          <div className="rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 p-4 lg:p-6 text-white opacity-0 animate-fade-in stagger-3">
+            <p className="text-[10px] lg:text-xs font-medium text-purple-100 uppercase tracking-wider whitespace-nowrap">達成率</p>
+            <p className="mt-1 lg:mt-2 text-2xl lg:text-3xl font-bold">
+              {totalTarget > 0 ? ((totalCurrent / totalTarget) * 100).toFixed(0) : 0}%
+              <span className="text-sm lg:text-base font-normal text-purple-200 ml-1">全体</span>
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+        {/* Category Metrics */}
+        <div className="mb-6 lg:mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+          {categoryStats.map(({ category, newStats, existingStats }, index) => (
+            <MetricCard
+              key={category}
+              category={category}
+              newStats={newStats}
+              existingStats={existingStats}
+              index={index}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          ))}
         </div>
-      </main>
-    </div>
+
+        {/* Charts and Alerts */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+          {/* Chart */}
+          <div className="lg:col-span-1">
+            <HiringChart data={chartData} />
+          </div>
+          
+          {/* Urgent Projects */}
+          <div className="lg:col-span-1">
+            <UrgentProjects projects={urgentProjects} />
+          </div>
+          
+          {/* Slow Projects */}
+          <div className="lg:col-span-1">
+            <SlowProjects projects={slowProjects} />
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

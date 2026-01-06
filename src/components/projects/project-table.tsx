@@ -1,0 +1,297 @@
+'use client';
+
+import { useState, useMemo } from 'react';
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  flexRender,
+  createColumnHelper,
+  type SortingState,
+} from '@tanstack/react-table';
+import { Badge } from '@/components/ui/badge';
+import { MediaMatrix } from './media-matrix';
+import { cn } from '@/lib/utils';
+import { getCategoryColor, getSegmentColor, getStatusColor } from '@/lib/category-utils';
+import { calculateDateInfo, formatElapsedDays, formatRemainingDays, formatDate } from '@/lib/date-utils';
+import type { Project, Category, Segment, ProjectStatus } from '@/types/database';
+import { ChevronDown, ChevronUp, ChevronsUpDown, ExternalLink } from 'lucide-react';
+
+interface ProjectTableProps {
+  projects: Project[];
+  categoryFilter: Category | 'all';
+  segmentFilter: Segment | 'all';
+  statusFilter: ProjectStatus | 'all';
+  sortBy: 'deadline' | 'elapsed' | 'updated' | 'client';
+}
+
+const columnHelper = createColumnHelper<Project>();
+
+export function ProjectTable({
+  projects,
+  categoryFilter,
+  segmentFilter,
+  statusFilter,
+  sortBy,
+}: ProjectTableProps) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  // フィルタリングとソート
+  const filteredProjects = useMemo(() => {
+    let result = [...projects];
+
+    // フィルタリング
+    if (categoryFilter !== 'all') {
+      result = result.filter(p => p.category === categoryFilter);
+    }
+    if (segmentFilter !== 'all') {
+      result = result.filter(p => p.segment === segmentFilter);
+    }
+    if (statusFilter !== 'all') {
+      result = result.filter(p => p.status === statusFilter);
+    }
+
+    // ソート
+    result.sort((a, b) => {
+      switch (sortBy) {
+        case 'deadline':
+          if (!a.deadlineDate && !b.deadlineDate) return 0;
+          if (!a.deadlineDate) return 1;
+          if (!b.deadlineDate) return -1;
+          return a.deadlineDate.getTime() - b.deadlineDate.getTime();
+        case 'elapsed':
+          const aElapsed = a.handoverDate ? new Date().getTime() - a.handoverDate.getTime() : 0;
+          const bElapsed = b.handoverDate ? new Date().getTime() - b.handoverDate.getTime() : 0;
+          return bElapsed - aElapsed;
+        case 'updated':
+          return b.lastUpdated.getTime() - a.lastUpdated.getTime();
+        case 'client':
+          return a.clientName.localeCompare(b.clientName, 'ja');
+        default:
+          return 0;
+      }
+    });
+
+    return result;
+  }, [projects, categoryFilter, segmentFilter, statusFilter, sortBy]);
+
+  const columns = useMemo(() => [
+    columnHelper.accessor('segment', {
+      header: '',
+      cell: (info) => (
+        <Badge 
+          variant="outline" 
+          className={cn('text-[10px] px-1.5 py-0', getSegmentColor(info.getValue()))}
+        >
+          {info.getValue()}
+        </Badge>
+      ),
+      size: 60,
+    }),
+    columnHelper.accessor('hrId', {
+      header: 'HR ID',
+      cell: (info) => (
+        <span className="font-mono text-xs text-gray-500">{info.getValue()}</span>
+      ),
+      size: 100,
+    }),
+    columnHelper.accessor('clientName', {
+      header: 'クライアント名',
+      cell: (info) => (
+        <div className="max-w-[200px]">
+          <p className="truncate font-medium text-gray-900">{info.getValue()}</p>
+          <p className="truncate text-xs text-gray-500">
+            {info.row.original.position} · {info.row.original.employmentType}
+          </p>
+        </div>
+      ),
+      size: 220,
+    }),
+    columnHelper.accessor('category', {
+      header: '業態',
+      cell: (info) => (
+        <Badge 
+          variant="outline" 
+          className={cn('text-[10px] px-1.5 py-0', getCategoryColor(info.getValue()))}
+        >
+          {info.getValue()}
+        </Badge>
+      ),
+      size: 70,
+    }),
+    columnHelper.accessor('prefecture', {
+      header: 'エリア',
+      cell: (info) => (
+        <span className="text-sm text-gray-600">
+          {info.getValue()}{info.row.original.city && ` ${info.row.original.city}`}
+        </span>
+      ),
+      size: 120,
+    }),
+    columnHelper.accessor('handoverDate', {
+      header: '経過',
+      cell: (info) => {
+        const dateInfo = calculateDateInfo(info.getValue(), info.row.original.deadlineDate);
+        return (
+          <div className="flex items-center gap-1.5">
+            {dateInfo.isSlow && (
+              <Badge className="bg-amber-100 text-amber-700 border-0 text-[9px] px-1 py-0">
+                Slow
+              </Badge>
+            )}
+            <span className={cn(
+              'text-sm',
+              dateInfo.isSlow ? 'text-amber-600 font-medium' : 'text-gray-600'
+            )}>
+              {formatElapsedDays(dateInfo.elapsedDays)}
+            </span>
+          </div>
+        );
+      },
+      size: 100,
+    }),
+    columnHelper.accessor('deadlineDate', {
+      header: '期限',
+      cell: (info) => {
+        const dateInfo = calculateDateInfo(info.row.original.handoverDate, info.getValue());
+        return (
+          <div>
+            <p className={cn(
+              'text-sm font-medium',
+              dateInfo.isOverdue ? 'text-red-600' :
+              dateInfo.isUrgent ? 'text-amber-600' : 'text-gray-600'
+            )}>
+              {formatRemainingDays(dateInfo.remainingDays)}
+            </p>
+            <p className="text-[10px] text-gray-400">
+              {info.getValue() ? formatDate(info.getValue()) : '-'}
+            </p>
+          </div>
+        );
+      },
+      size: 100,
+    }),
+    columnHelper.accessor('media', {
+      header: '媒体',
+      cell: (info) => <MediaMatrix media={info.getValue()} compact />,
+      size: 150,
+    }),
+    columnHelper.accessor('status', {
+      header: 'ステータス',
+      cell: (info) => (
+        <Badge className={cn('text-[10px]', getStatusColor(info.getValue()))}>
+          {info.getValue()}
+        </Badge>
+      ),
+      size: 100,
+    }),
+    columnHelper.accessor('assignee', {
+      header: '担当',
+      cell: (info) => (
+        <span className="text-sm text-gray-600">{info.getValue()}</span>
+      ),
+      size: 80,
+    }),
+    columnHelper.display({
+      id: 'actions',
+      header: '',
+      cell: () => (
+        <button className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
+          <ExternalLink className="h-4 w-4" />
+        </button>
+      ),
+      size: 50,
+    }),
+  ], []);
+
+  const table = useReactTable({
+    data: filteredProjects,
+    columns,
+    state: { sorting },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+  });
+
+  return (
+    <div className="overflow-hidden rounded-2xl bg-white card-shadow">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id} className="border-b border-gray-100">
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                    style={{ width: header.getSize() }}
+                  >
+                    {header.isPlaceholder ? null : (
+                      <div
+                        className={cn(
+                          'flex items-center gap-1',
+                          header.column.getCanSort() && 'cursor-pointer select-none hover:text-gray-900'
+                        )}
+                        onClick={header.column.getToggleSortingHandler()}
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {header.column.getCanSort() && (
+                          <span className="text-gray-400">
+                            {{
+                              asc: <ChevronUp className="h-3.5 w-3.5" />,
+                              desc: <ChevronDown className="h-3.5 w-3.5" />,
+                            }[header.column.getIsSorted() as string] ?? (
+                              <ChevronsUpDown className="h-3.5 w-3.5 opacity-50" />
+                            )}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row, index) => (
+              <tr
+                key={row.id}
+                className={cn(
+                  'border-b border-gray-50 transition-colors hover:bg-gray-50/50',
+                  'opacity-0 animate-fade-in',
+                  index < 5 && `stagger-${index + 1}`
+                )}
+                style={{ animationDelay: index >= 5 ? `${0.05 * index}s` : undefined }}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    className="px-4 py-3"
+                    style={{ width: cell.column.getSize() }}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Summary Footer */}
+      <div className="border-t border-gray-100 bg-gray-50/50 px-4 py-3">
+        <p className="text-sm text-gray-500">
+          {filteredProjects.length}件の案件を表示中
+          {(categoryFilter !== 'all' || segmentFilter !== 'all' || statusFilter !== 'all') && (
+            <span className="ml-2 text-gray-400">
+              (フィルター適用中)
+            </span>
+          )}
+        </p>
+      </div>
+    </div>
+  );
+}
+
