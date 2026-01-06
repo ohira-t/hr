@@ -51,7 +51,10 @@ function getStatusStyle(status: MediaStatus): { isActive: boolean; style: string
 export function MediaMatrix({ media, compact = false }: MediaMatrixProps) {
   return (
     <TooltipProvider>
-      <div className={cn('flex gap-1', compact ? 'flex-wrap' : 'gap-1.5')}>
+      <div className={cn(
+        'grid gap-1',
+        compact ? 'grid-cols-5 w-[140px]' : 'grid-cols-6 gap-1.5'
+      )}>
         {media.map((m) => {
           const config = mediaConfig[m.mediaName];
           const statusInfo = getStatusStyle(m.status);
@@ -61,15 +64,15 @@ export function MediaMatrix({ media, compact = false }: MediaMatrixProps) {
               <TooltipTrigger asChild>
                 <div
                   className={cn(
-                    'flex items-center justify-center rounded text-[10px] font-medium cursor-default transition-all duration-200',
-                    compact ? 'h-5 w-5' : 'h-6 min-w-[28px] px-1',
+                    'flex items-center justify-center rounded text-[10px] font-semibold cursor-default transition-all duration-200',
+                    compact ? 'h-6 w-6' : 'h-7 min-w-[32px] px-1.5',
                     statusInfo.isActive 
-                      ? cn(config.activeColor, 'text-white') 
-                      : 'bg-gray-200 text-gray-400',
+                      ? cn(config.activeColor, 'text-white shadow-sm') 
+                      : 'bg-gray-100 text-gray-400',
                     statusInfo.style
                   )}
                 >
-                  {compact ? config.short.charAt(0) : config.short}
+                  {compact ? config.short.substring(0, 2) : config.short}
                 </div>
               </TooltipTrigger>
               <TooltipContent side="top" className="text-xs">

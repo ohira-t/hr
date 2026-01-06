@@ -222,7 +222,7 @@ export function ProjectTable({
     columnHelper.accessor('media', {
       header: '掲載媒体',
       cell: (info) => <MediaMatrix media={info.getValue()} compact />,
-      size: 180,
+      size: 160,
     }),
     columnHelper.accessor('status', {
       header: 'ステータス',
