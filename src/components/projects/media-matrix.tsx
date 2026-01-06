@@ -30,20 +30,21 @@ const mediaConfig: Record<MediaName, { short: string; activeColor: string }> = {
 };
 
 // ステータスに応じた表示スタイル
-function getStatusStyle(status: MediaStatus): string {
+function getStatusStyle(status: MediaStatus): { isActive: boolean; style: string } {
   switch (status) {
-    case '掲載中':
-      return 'ring-2 ring-offset-1';
-    case '掲載停止':
-      return 'opacity-30';
+    case '募集中':
+      return { isActive: true, style: 'ring-2 ring-offset-1' };
+    case '準備中':
+      return { isActive: true, style: 'ring-1 ring-amber-400' };
+    case '審査・同期中':
+      return { isActive: true, style: 'ring-1 ring-blue-400' };
+    case '一時停止':
+      return { isActive: false, style: 'opacity-40' };
+    case '終了':
+      return { isActive: false, style: 'opacity-30' };
     case '未掲載':
-      return 'opacity-50 bg-gray-200';
-    case '不要':
-      return 'opacity-20 bg-gray-100';
-    case '保留':
-      return 'opacity-60 bg-amber-100';
     default:
-      return 'opacity-40 bg-gray-200';
+      return { isActive: false, style: 'opacity-30' };
   }
 }
 
@@ -53,17 +54,19 @@ export function MediaMatrix({ media, compact = false }: MediaMatrixProps) {
       <div className={cn('flex gap-1', compact ? 'flex-wrap' : 'gap-1.5')}>
         {media.map((m) => {
           const config = mediaConfig[m.mediaName];
-          const isActive = m.status === '掲載中';
+          const statusInfo = getStatusStyle(m.status);
           
           return (
             <Tooltip key={m.id}>
               <TooltipTrigger asChild>
                 <div
                   className={cn(
-                    'flex items-center justify-center rounded text-[10px] font-medium text-white cursor-default transition-all duration-200',
+                    'flex items-center justify-center rounded text-[10px] font-medium cursor-default transition-all duration-200',
                     compact ? 'h-5 w-5' : 'h-6 min-w-[28px] px-1',
-                    isActive ? config.activeColor : 'bg-gray-300',
-                    getStatusStyle(m.status)
+                    statusInfo.isActive 
+                      ? cn(config.activeColor, 'text-white') 
+                      : 'bg-gray-200 text-gray-400',
+                    statusInfo.style
                   )}
                 >
                   {compact ? config.short.charAt(0) : config.short}

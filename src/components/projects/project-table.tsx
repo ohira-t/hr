@@ -78,11 +78,11 @@ export function ProjectTable({
     if (assigneeFilter !== 'all') {
       result = result.filter(p => p.assignee === assigneeFilter);
     }
-    // 媒体フィルタ（複数選択 - いずれかの媒体が掲載中なら表示）
+    // 媒体フィルタ（複数選択 - いずれかの媒体が募集中なら表示）
     if (mediaFilter.length > 0) {
       result = result.filter(p => 
         p.media.some(m => 
-          mediaFilter.includes(m.mediaName) && m.status === '掲載中'
+          mediaFilter.includes(m.mediaName) && m.status === '募集中'
         )
       );
     }
