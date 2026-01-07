@@ -40,6 +40,7 @@ interface ProjectLite {
   handoverDate: Date | null;
   deadlineDate: Date | null;
   lastUpdated: Date;
+  nextAction: string;
   activeMedia: MediaName[];
 }
 
@@ -259,7 +260,21 @@ export function ProjectTable({
       cell: (info) => (
         <span className="text-[13px] text-gray-700 whitespace-nowrap">{info.getValue()}</span>
       ),
-      size: 80,
+      size: 70,
+    }),
+    columnHelper.accessor('nextAction', {
+      header: '次アクション',
+      cell: (info) => {
+        const value = info.getValue();
+        return value ? (
+          <p className="text-[13px] text-gray-700 whitespace-nowrap max-w-[200px] truncate" title={value}>
+            {value}
+          </p>
+        ) : (
+          <span className="text-[12px] text-gray-400">—</span>
+        );
+      },
+      size: 200,
     }),
     columnHelper.display({
       id: 'actions',
@@ -292,7 +307,7 @@ export function ProjectTable({
   return (
     <div className="overflow-hidden rounded-2xl bg-white card-shadow">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1200px]">
+        <table className="w-full min-w-[1400px]">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-gray-200/80 bg-gray-50/50">

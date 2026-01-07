@@ -31,6 +31,7 @@ interface ApiProjectLite {
   handoverDate: string | null;
   deadlineDate: string | null;
   lastUpdated: string;
+  nextAction: string;
   activeMedia: string[]; // 募集中のメディア名の配列
 }
 
@@ -54,6 +55,7 @@ export interface ProjectLite {
   handoverDate: Date | null;
   deadlineDate: Date | null;
   lastUpdated: Date;
+  nextAction: string;
   activeMedia: MediaName[]; // 募集中のメディア名の配列
 }
 
@@ -78,6 +80,7 @@ function convertApiToProjectLite(api: ApiProjectLite): ProjectLite {
     handoverDate: api.handoverDate ? new Date(api.handoverDate) : null,
     deadlineDate: api.deadlineDate ? new Date(api.deadlineDate) : null,
     lastUpdated: new Date(api.lastUpdated),
+    nextAction: api.nextAction,
     activeMedia: api.activeMedia as MediaName[],
   };
 }
