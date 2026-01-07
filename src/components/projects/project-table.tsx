@@ -13,14 +13,35 @@ import {
   type SortingState,
 } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
+import { ActiveMediaBadges } from './active-media-badges';
 import { cn } from '@/lib/utils';
 import { getCategoryColor, getSegmentColor, getStatusColor } from '@/lib/category-utils';
 import { calculateDateInfo, formatElapsedDays, formatRemainingDays, formatDate } from '@/lib/date-utils';
-import type { Project, Category, Segment, ProjectStatus, MediaName, Position, EmploymentType } from '@/types/database';
+import type { Category, Segment, ProjectStatus, MediaName, Position, EmploymentType, Department, TargetPeriod } from '@/types/database';
 import { ChevronDown, ChevronUp, ChevronsUpDown, ExternalLink } from 'lucide-react';
 
-// 一覧用の軽量Project型
-type ProjectLite = Omit<Project, 'media' | 'clientId' | 'applicationId' | 'city' | 'facilityName' | 'openingDate' | 'hurdles' | 'notes' | 'nextAction' | 'createdAt'>;
+// 一覧用の軽量Project型（page.tsxからexportされた型を使用）
+interface ProjectLite {
+  id: string;
+  hrId: string;
+  segment: Segment;
+  category: Category;
+  clientName: string;
+  clientNameKana: string;
+  prefecture: string;
+  position: Position;
+  employmentType: EmploymentType;
+  targetHiringCount: number;
+  currentHiringCount: number;
+  status: ProjectStatus;
+  assignee: string;
+  department: Department;
+  targetPeriod: TargetPeriod | null;
+  handoverDate: Date | null;
+  deadlineDate: Date | null;
+  lastUpdated: Date;
+  activeMedia: MediaName[];
+}
 
 interface ProjectTableProps {
   projects: ProjectLite[];
@@ -92,8 +113,12 @@ export function ProjectTable({
     if (employmentTypeFilter !== 'all') {
       result = result.filter(p => p.employmentType === employmentTypeFilter);
     }
-    // 媒体フィルタ - 軽量版では無効（詳細ページで確認可能）
-    // mediaFilter は現在使用されていませんが、将来のためにpropsは残しています
+    // 媒体フィルタ（募集中のメディアでフィルタリング）
+    if (mediaFilter.length > 0) {
+      result = result.filter(p => 
+        mediaFilter.some(filterMedia => p.activeMedia.includes(filterMedia))
+      );
+    }
 
     // ソート
     result.sort((a, b) => {
@@ -117,7 +142,7 @@ export function ProjectTable({
     });
 
     return result;
-  }, [projects, categoryFilter, segmentFilter, statusFilter, assigneeFilter, positionFilter, employmentTypeFilter, searchQuery, sortBy]);
+  }, [projects, categoryFilter, segmentFilter, statusFilter, assigneeFilter, positionFilter, employmentTypeFilter, mediaFilter, searchQuery, sortBy]);
 
   const columns = useMemo(() => [
     columnHelper.accessor('segment', {
@@ -214,6 +239,11 @@ export function ProjectTable({
         );
       },
       size: 110,
+    }),
+    columnHelper.accessor('activeMedia', {
+      header: '掲載媒体',
+      cell: (info) => <ActiveMediaBadges activeMedia={info.getValue()} />,
+      size: 160,
     }),
     columnHelper.accessor('status', {
       header: 'ステータス',

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const isLite = searchParams.get('lite') === 'true';
 
     if (isLite) {
-      // 軽量版: 一覧表示用（メディア情報なし、必要なフィールドのみ）
+      // 軽量版: 一覧表示用（必要なフィールドのみ + アクティブメディア名）
       const projects = await prisma.project.findMany({
         select: {
           id: true,
@@ -30,14 +30,25 @@ export async function GET(request: NextRequest) {
           handoverDate: true,
           deadlineDate: true,
           lastUpdated: true,
+          MediaManagement: {
+            where: { status: { in: ['募集中', '準備中', '審査・同期中'] } },
+            select: { mediaName: true, status: true },
+          },
         },
         orderBy: {
           lastUpdated: 'desc',
         },
       });
 
+      // 軽量版レスポンス: MediaManagement -> activeMedia（アクティブメディア名配列）
+      const formattedProjects = projects.map(project => ({
+        ...project,
+        activeMedia: project.MediaManagement.map(m => m.mediaName),
+        MediaManagement: undefined,
+      }));
+
       // キャッシュヘッダーを追加（60秒間キャッシュ）
-      return NextResponse.json(projects, {
+      return NextResponse.json(formattedProjects, {
         headers: {
           'Cache-Control': 'private, max-age=60, stale-while-revalidate=120',
         },

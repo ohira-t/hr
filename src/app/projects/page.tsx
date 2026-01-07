@@ -31,10 +31,31 @@ interface ApiProjectLite {
   handoverDate: string | null;
   deadlineDate: string | null;
   lastUpdated: string;
+  activeMedia: string[]; // 募集中のメディア名の配列
 }
 
-// 一覧用の軽量Project型（メディア情報なし）
-type ProjectLite = Omit<Project, 'media' | 'clientId' | 'applicationId' | 'city' | 'facilityName' | 'openingDate' | 'hurdles' | 'notes' | 'nextAction' | 'createdAt'>;
+// 一覧用の軽量Project型
+export interface ProjectLite {
+  id: string;
+  hrId: string;
+  segment: Segment;
+  category: Category;
+  clientName: string;
+  clientNameKana: string;
+  prefecture: string;
+  position: Position;
+  employmentType: EmploymentType;
+  targetHiringCount: number;
+  currentHiringCount: number;
+  status: ProjectStatus;
+  assignee: string;
+  department: Department;
+  targetPeriod: TargetPeriod | null;
+  handoverDate: Date | null;
+  deadlineDate: Date | null;
+  lastUpdated: Date;
+  activeMedia: MediaName[]; // 募集中のメディア名の配列
+}
 
 // APIレスポンスをProjectLite型に変換（軽量版）
 function convertApiToProjectLite(api: ApiProjectLite): ProjectLite {
@@ -57,6 +78,7 @@ function convertApiToProjectLite(api: ApiProjectLite): ProjectLite {
     handoverDate: api.handoverDate ? new Date(api.handoverDate) : null,
     deadlineDate: api.deadlineDate ? new Date(api.deadlineDate) : null,
     lastUpdated: new Date(api.lastUpdated),
+    activeMedia: api.activeMedia as MediaName[],
   };
 }
 
