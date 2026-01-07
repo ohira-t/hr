@@ -292,14 +292,14 @@ export function ProjectTable({
   return (
     <div className="overflow-hidden rounded-2xl bg-white card-shadow">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1500px]">
+        <table className="w-full min-w-[1200px]">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-gray-200/80 bg-gray-50/50">
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap"
+                    className="px-2.5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap"
                     style={{ width: header.getSize() }}
                   >
                     {header.isPlaceholder ? null : (
@@ -350,7 +350,7 @@ export function ProjectTable({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-5 py-4"
+                      className="px-2.5 py-3"
                       style={{ width: cell.column.getSize() }}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -364,7 +364,7 @@ export function ProjectTable({
       </div>
 
       {/* Summary Footer */}
-      <div className="border-t border-gray-200/80 bg-gray-50/50 px-5 py-3.5">
+      <div className="border-t border-gray-200/80 bg-gray-50/50 px-3 py-3">
         <p className="text-[13px] text-gray-600">
           <span className="font-medium">{filteredProjects.length}件</span>の案件を表示中
           {hasFilters && (
