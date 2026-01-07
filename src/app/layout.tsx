@@ -7,7 +7,7 @@ import { LayoutProvider } from "@/components/layout/layout-provider";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
 export const metadata: Metadata = {
-  title: "採用管理システム - HR部",
+  title: "採用管理システム - HRチーム",
   description: "福祉事業の採用業務を効率的に管理するシステム",
 };
 

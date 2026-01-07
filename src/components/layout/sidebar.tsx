@@ -119,7 +119,7 @@ export function Sidebar() {
               <h1 className="text-lg font-semibold tracking-tight text-gray-900 whitespace-nowrap">
                 採用管理システム
               </h1>
-              <p className="text-[11px] font-medium text-gray-500">HR部</p>
+              <p className="text-[11px] font-medium text-gray-500">HRチーム</p>
             </div>
           )}
         </Link>
@@ -259,7 +259,7 @@ export function Sidebar() {
         {!isSidebarCollapsed && (
           <div className="border-t border-gray-200/60 p-4">
             <div className="rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-              <p className="text-xs font-medium text-gray-600">HR部 業務管理</p>
+              <p className="text-xs font-medium text-gray-600">HRチーム 業務管理</p>
               <p className="mt-1 text-[11px] text-gray-500">
                 福祉事業採用支援
               </p>
