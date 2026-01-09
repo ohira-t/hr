@@ -48,10 +48,10 @@ export async function GET(request: NextRequest) {
         MediaManagement: undefined,
       }));
 
-      // キャッシュヘッダーを追加（60秒間キャッシュ）
+      // キャッシュを無効化（常に最新データを取得）
       return NextResponse.json(formattedProjects, {
         headers: {
-          'Cache-Control': 'private, max-age=60, stale-while-revalidate=120',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
         },
       });
     }

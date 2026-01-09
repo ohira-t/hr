@@ -104,7 +104,13 @@ function ProjectsContent() {
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const response = await fetch('/api/projects?lite=true');
+        // キャッシュを回避して常に最新データを取得
+        const response = await fetch('/api/projects?lite=true', {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        });
         if (!response.ok) throw new Error('Failed to fetch projects');
         const data: ApiProjectLite[] = await response.json();
         setProjects(data.map(convertApiToProjectLite));
