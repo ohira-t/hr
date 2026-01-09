@@ -15,9 +15,11 @@ import {
   FileDown,
   FileUp,
   RefreshCcw,
-  Info
+  Info,
+  Newspaper
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { MEDIA_NAMES } from '@/types/database';
 
 // CSVカラム定義（レコードと一致）
 const CSV_COLUMNS = [
@@ -53,6 +55,14 @@ interface ImportResult {
   errors: { row: number; message: string }[];
 }
 
+interface MediaImportResult {
+  success: number;
+  updated: number;
+  skipped: number;
+  errors: string[];
+  mediaColumnsFound?: string[];
+}
+
 interface ApiProject {
   id: string;
   hrId: string;
@@ -82,10 +92,14 @@ interface ApiProject {
 
 export default function CSVPage() {
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
+  const [mediaImportResult, setMediaImportResult] = useState<MediaImportResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isMediaProcessing, setIsMediaProcessing] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [mediaDragActive, setMediaDragActive] = useState(false);
   const [projectCount, setProjectCount] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const mediaFileInputRef = useRef<HTMLInputElement>(null);
 
   // プロジェクト数を取得
   useEffect(() => {
@@ -319,6 +333,169 @@ export default function CSVPage() {
       });
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  // 媒体ステータス雛形ダウンロード
+  const handleDownloadMediaTemplate = () => {
+    const headers = ['HR ID', ...MEDIA_NAMES].join(',');
+    const sampleRow = [
+      'T0000-00', // HR ID
+      '募集中',   // ジョブメドレー
+      '未掲載',   // ウェルミージョブ
+      '準備中',   // ハローワーク
+      '未掲載',   // エントリーポケット
+      '未掲載',   // 人材紹介
+      '未掲載',   // リファラル
+      '未掲載',   // リジョブ
+      '未掲載',   // indeed Plus
+      '未掲載',   // engage
+      '未掲載',   // バイトル
+      '未掲載',   // キャリアジョブズ
+    ].map(v => escapeCSV(v)).join(',');
+
+    const bom = '\uFEFF';
+    const csv = bom + headers + '\n' + sampleRow;
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `媒体ステータス_インポート雛形_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // 媒体ステータスエクスポート
+  const handleMediaExport = async () => {
+    setIsMediaProcessing(true);
+    try {
+      const response = await fetch('/api/projects');
+      if (!response.ok) throw new Error('Failed to fetch projects');
+      const projects = await response.json();
+
+      const headers = ['HR ID', ...MEDIA_NAMES].join(',');
+      const rows = projects.map((project: ApiProject & { media?: { mediaName: string; status: string }[] }) => {
+        const mediaStatusMap = new Map<string, string>();
+        project.media?.forEach((m: { mediaName: string; status: string }) => {
+          mediaStatusMap.set(m.mediaName, m.status);
+        });
+
+        return [
+          project.hrId,
+          ...MEDIA_NAMES.map(name => mediaStatusMap.get(name) || '未掲載'),
+        ].map(v => escapeCSV(v)).join(',');
+      }).join('\n');
+
+      const bom = '\uFEFF';
+      const csv = bom + headers + '\n' + rows;
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `媒体ステータス_エクスポート_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Media export error:', error);
+      alert('エクスポートに失敗しました');
+    } finally {
+      setIsMediaProcessing(false);
+    }
+  };
+
+  // 媒体ステータスインポート処理
+  const handleMediaImport = async (file: File) => {
+    setIsMediaProcessing(true);
+    setMediaImportResult(null);
+
+    try {
+      const text = await file.text();
+      const rows = parseCSV(text);
+
+      if (rows.length < 2) {
+        setMediaImportResult({
+          success: 0,
+          updated: 0,
+          skipped: 0,
+          errors: ['CSVファイルにデータがありません'],
+        });
+        return;
+      }
+
+      const headers = rows[0];
+      const dataRows = rows.slice(1);
+
+      // APIにリクエスト
+      const response = await fetch('/api/csv/media-import', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          headers,
+          rows: dataRows,
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (!response.ok) {
+        setMediaImportResult({
+          success: 0,
+          updated: 0,
+          skipped: 0,
+          errors: result.errors || ['インポート処理に失敗しました'],
+        });
+        return;
+      }
+
+      setMediaImportResult({
+        success: result.success,
+        updated: result.updated,
+        skipped: result.skipped,
+        errors: result.errors || [],
+        mediaColumnsFound: result.mediaColumnsFound,
+      });
+    } catch (error) {
+      console.error('Media import error:', error);
+      setMediaImportResult({
+        success: 0,
+        updated: 0,
+        skipped: 0,
+        errors: ['ファイルの読み込みに失敗しました'],
+      });
+    } finally {
+      setIsMediaProcessing(false);
+    }
+  };
+
+  // 媒体ドラッグ&ドロップハンドラー
+  const handleMediaDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setMediaDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setMediaDragActive(false);
+    }
+  };
+
+  const handleMediaDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setMediaDragActive(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      if (file.name.endsWith('.csv')) {
+        handleMediaImport(file);
+      }
+    }
+  };
+
+  const handleMediaFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      handleMediaImport(e.target.files[0]);
     }
   };
 
@@ -563,6 +740,167 @@ export default function CSVPage() {
           </Card>
         </div>
 
+        {/* 媒体ステータスCSV */}
+        <Card className="border-0 card-shadow bg-gradient-to-br from-purple-50/50 to-pink-50/50">
+          <CardContent className="p-6">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100">
+                <Newspaper className="h-6 w-6 text-purple-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-base font-semibold text-gray-900 mb-2">媒体ステータス一括更新</h3>
+                <p className="text-sm text-gray-600">
+                  HR IDを主キーに、各案件の媒体掲載ステータスを一括で更新できます。
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+              {/* 媒体インポート */}
+              <div className="space-y-4">
+                <h4 className="text-sm font-semibold text-gray-700">インポート</h4>
+                <div
+                  className={cn(
+                    'relative rounded-2xl border-2 border-dashed p-6 text-center transition-all duration-200',
+                    mediaDragActive
+                      ? 'border-purple-400 bg-purple-50/50'
+                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50/50'
+                  )}
+                  onDragEnter={handleMediaDrag}
+                  onDragLeave={handleMediaDrag}
+                  onDragOver={handleMediaDrag}
+                  onDrop={handleMediaDrop}
+                >
+                  <input
+                    ref={mediaFileInputRef}
+                    type="file"
+                    accept=".csv"
+                    onChange={handleMediaFileChange}
+                    className="hidden"
+                  />
+                  <Upload className={cn(
+                    'mx-auto h-8 w-8 mb-3 transition-colors',
+                    mediaDragActive ? 'text-purple-500' : 'text-gray-400'
+                  )} />
+                  <p className="text-sm font-medium text-gray-700 mb-3">
+                    CSVファイルをドロップ
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => mediaFileInputRef.current?.click()}
+                    disabled={isMediaProcessing}
+                    className="rounded-full"
+                  >
+                    ファイルを選択
+                  </Button>
+                </div>
+
+                {/* 雛形ダウンロード */}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-white/60">
+                  <span className="text-xs text-gray-600">インポート用雛形</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleDownloadMediaTemplate}
+                    className="gap-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50 h-8"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    雛形
+                  </Button>
+                </div>
+
+                {/* 処理結果 */}
+                {isMediaProcessing && (
+                  <div className="flex items-center justify-center gap-3 p-3 rounded-xl bg-purple-50">
+                    <RefreshCcw className="h-4 w-4 text-purple-600 animate-spin" />
+                    <span className="text-sm font-medium text-purple-700">処理中...</span>
+                  </div>
+                )}
+
+                {mediaImportResult && (
+                  <div className={cn(
+                    'p-4 rounded-xl',
+                    mediaImportResult.errors.length > 0 && mediaImportResult.success === 0
+                      ? 'bg-red-50'
+                      : mediaImportResult.errors.length > 0
+                      ? 'bg-amber-50'
+                      : 'bg-emerald-50'
+                  )}>
+                    <div className="flex items-center gap-2 mb-2">
+                      {mediaImportResult.errors.length > 0 && mediaImportResult.success === 0 ? (
+                        <XCircle className="h-4 w-4 text-red-500" />
+                      ) : mediaImportResult.errors.length > 0 ? (
+                        <AlertTriangle className="h-4 w-4 text-amber-500" />
+                      ) : (
+                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                      )}
+                      <span className="text-sm font-semibold text-gray-900">処理完了</span>
+                    </div>
+                    <div className="flex gap-2 text-xs">
+                      <Badge variant="secondary" className="bg-white">
+                        更新: {mediaImportResult.updated}件
+                      </Badge>
+                      {mediaImportResult.skipped > 0 && (
+                        <Badge variant="secondary" className="bg-amber-100 text-amber-700">
+                          スキップ: {mediaImportResult.skipped}件
+                        </Badge>
+                      )}
+                    </div>
+                    {mediaImportResult.errors.length > 0 && (
+                      <div className="mt-2 pt-2 border-t border-gray-200">
+                        <ul className="text-xs text-red-600 space-y-0.5">
+                          {mediaImportResult.errors.slice(0, 3).map((error, i) => (
+                            <li key={i}>{error}</li>
+                          ))}
+                          {mediaImportResult.errors.length > 3 && (
+                            <li>...他 {mediaImportResult.errors.length - 3}件</li>
+                          )}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* 媒体エクスポート */}
+              <div className="space-y-4">
+                <h4 className="text-sm font-semibold text-gray-700">エクスポート</h4>
+                <div className="p-6 rounded-2xl bg-white/60 text-center">
+                  <Download className="mx-auto h-8 w-8 text-purple-500 mb-3" />
+                  <p className="text-sm font-medium text-gray-700 mb-1">
+                    媒体ステータスをダウンロード
+                  </p>
+                  <p className="text-xs text-gray-500 mb-4">
+                    全案件の媒体ステータス
+                  </p>
+                  <Button
+                    variant="outline"
+                    onClick={handleMediaExport}
+                    disabled={isMediaProcessing}
+                    className="rounded-full gap-2 border-purple-200 text-purple-700 hover:bg-purple-50"
+                  >
+                    <Download className="h-4 w-4" />
+                    エクスポート
+                  </Button>
+                </div>
+
+                {/* 有効なステータス値 */}
+                <div className="p-3 rounded-xl bg-white/60">
+                  <p className="text-xs font-medium text-gray-500 mb-2">有効なステータス値</p>
+                  <div className="flex flex-wrap gap-1">
+                    {['未掲載', '準備中', '審査・同期中', '募集中', '一時停止', '終了'].map(status => (
+                      <Badge key={status} variant="secondary" className="text-[10px] bg-white">
+                        {status}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* 注意事項 */}
         <Card className="border-0 card-shadow">
           <CardContent className="p-6">
@@ -575,6 +913,7 @@ export default function CSVPage() {
                   <li>• 空白のセルは「変更なし」として扱われ、既存の値が保持されます。</li>
                   <li>• 日付は「YYYY-MM-DD」形式で入力してください。</li>
                   <li>• セグメント、業態、ステータス等は定義済みの値のみ有効です。</li>
+                  <li>• 媒体ステータスは「未掲載」「準備中」「審査・同期中」「募集中」「一時停止」「終了」のいずれかを指定してください。</li>
                 </ul>
               </div>
             </div>
