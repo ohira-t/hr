@@ -336,26 +336,17 @@ export default function CSVPage() {
     }
   };
 
-  // 媒体ステータス雛形ダウンロード
+  // 媒体ステータス雛形ダウンロード（縦持ち形式）
   const handleDownloadMediaTemplate = () => {
-    const headers = ['HR ID', ...MEDIA_NAMES].join(',');
-    const sampleRow = [
-      'T0000-00', // HR ID
-      '募集中',   // ジョブメドレー
-      '未掲載',   // ウェルミージョブ
-      '準備中',   // ハローワーク
-      '未掲載',   // エントリーポケット
-      '未掲載',   // 人材紹介
-      '未掲載',   // リファラル
-      '未掲載',   // リジョブ
-      '未掲載',   // indeed Plus
-      '未掲載',   // engage
-      '未掲載',   // バイトル
-      '未掲載',   // キャリアジョブズ
-    ].map(v => escapeCSV(v)).join(',');
+    const headers = ['HR ID', '媒体名', 'ステータス', '開始日', '終了日'].join(',');
+    const sampleRows = [
+      ['T0001-01', 'ジョブメドレー', '募集中', '2025-01-01', ''],
+      ['T0001-01', 'ハローワーク', '準備中', '', ''],
+      ['T0001-02', 'ジョブメドレー', '未掲載', '', ''],
+    ].map(row => row.map(v => escapeCSV(v)).join(',')).join('\n');
 
     const bom = '\uFEFF';
-    const csv = bom + headers + '\n' + sampleRow;
+    const csv = bom + headers + '\n' + sampleRows;
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -365,7 +356,7 @@ export default function CSVPage() {
     URL.revokeObjectURL(url);
   };
 
-  // 媒体ステータスエクスポート
+  // 媒体ステータスエクスポート（縦持ち形式：開始日・終了日含む）
   const handleMediaExport = async () => {
     setIsMediaProcessing(true);
     try {
@@ -373,21 +364,36 @@ export default function CSVPage() {
       if (!response.ok) throw new Error('Failed to fetch projects');
       const projects = await response.json();
 
-      const headers = ['HR ID', ...MEDIA_NAMES].join(',');
-      const rows = projects.map((project: ApiProject & { media?: { mediaName: string; status: string }[] }) => {
-        const mediaStatusMap = new Map<string, string>();
-        project.media?.forEach((m: { mediaName: string; status: string }) => {
-          mediaStatusMap.set(m.mediaName, m.status);
-        });
+      const headers = ['HR ID', '媒体名', 'ステータス', '開始日', '終了日'].join(',');
+      const rows: string[] = [];
 
-        return [
-          project.hrId,
-          ...MEDIA_NAMES.map(name => mediaStatusMap.get(name) || '未掲載'),
-        ].map(v => escapeCSV(v)).join(',');
-      }).join('\n');
+      projects.forEach((project: ApiProject & { 
+        media?: { 
+          mediaName: string; 
+          status: string; 
+          startDate?: string | null; 
+          endDate?: string | null;
+        }[] 
+      }) => {
+        // 各媒体について1行ずつ出力
+        MEDIA_NAMES.forEach(mediaName => {
+          const media = project.media?.find(m => m.mediaName === mediaName);
+          const status = media?.status || '未掲載';
+          const startDate = media?.startDate ? media.startDate.split('T')[0] : '';
+          const endDate = media?.endDate ? media.endDate.split('T')[0] : '';
+          
+          rows.push([
+            project.hrId,
+            mediaName,
+            status,
+            startDate,
+            endDate,
+          ].map(v => escapeCSV(v)).join(','));
+        });
+      });
 
       const bom = '\uFEFF';
-      const csv = bom + headers + '\n' + rows;
+      const csv = bom + headers + '\n' + rows.join('\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -750,8 +756,16 @@ export default function CSVPage() {
               <div className="flex-1">
                 <h3 className="text-base font-semibold text-gray-900 mb-2">媒体ステータス一括更新</h3>
                 <p className="text-sm text-gray-600">
-                  HR IDを主キーに、各案件の媒体掲載ステータスを一括で更新できます。
+                  HR IDを主キーに、各案件の媒体掲載ステータス・開始日・終了日を一括で更新できます。
                 </p>
+                <div className="mt-3 p-3 rounded-lg bg-white/50 text-xs text-gray-500">
+                  <p className="font-medium text-gray-700 mb-1">CSVフォーマット（縦持ち形式）</p>
+                  <code className="block bg-gray-100 p-2 rounded text-[10px] overflow-x-auto">
+                    HR ID, 媒体名, ステータス, 開始日, 終了日<br/>
+                    T0001-01, ジョブメドレー, 募集中, 2025-01-01,<br/>
+                    T0001-01, ハローワーク, 準備中, ,
+                  </code>
+                </div>
               </div>
             </div>
 
