@@ -13,7 +13,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Sparkles,
-  Archive
+  Archive,
+  Newspaper
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLayout } from './layout-provider';
@@ -28,6 +29,11 @@ const navigation = [
     name: '採用案件一覧',
     href: '/projects',
     icon: Users,
+  },
+  {
+    name: '採用媒体',
+    href: '/media',
+    icon: Newspaper,
   },
   {
     name: 'CSV入出力',
