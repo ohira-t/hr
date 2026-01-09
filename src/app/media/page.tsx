@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Header } from '@/components/layout/header';
@@ -10,14 +10,14 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Search, ExternalLink, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getCategoryColor, getSegmentColor } from '@/lib/category-utils';
-import type { Project, MediaManagement } from '@/types/database';
+import type { MediaManagement, Segment, Category } from '@/types/database';
 
 interface ProjectListItem {
   id: string;
   hrId: string;
   clientName: string;
-  segment: string;
-  category: string;
+  segment: Segment;
+  category: Category;
   prefecture: string;
   status: string;
 }
@@ -26,14 +26,14 @@ interface ProjectDetail {
   id: string;
   hrId: string;
   clientName: string;
-  segment: string;
-  category: string;
+  segment: Segment;
+  category: Category;
   prefecture: string;
   status: string;
   media: MediaManagement[];
 }
 
-export default function MediaPage() {
+function MediaContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const projectIdFromUrl = searchParams.get('project');
@@ -320,5 +320,18 @@ export default function MediaPage() {
         />
       )}
     </>
+  );
+}
+
+export default function MediaPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+        <span className="ml-3 text-gray-500">読み込み中...</span>
+      </div>
+    }>
+      <MediaContent />
+    </Suspense>
   );
 }
