@@ -63,11 +63,11 @@ function filterProjects(
     result = result.filter(p => p.employmentType === filters.employmentTypeFilter);
   }
 
-  // 媒体フィルタ（複数選択 - いずれかの媒体が募集中なら表示）
+  // 媒体フィルタ（複数選択 - いずれかの媒体が掲載中なら表示）
   if (filters.mediaFilter.length > 0) {
     result = result.filter(p =>
       p.media.some(m =>
-        filters.mediaFilter.includes(m.mediaName) && m.status === '募集中'
+        filters.mediaFilter.includes(m.mediaName) && m.status === '掲載中'
       )
     );
   }

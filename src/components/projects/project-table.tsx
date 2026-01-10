@@ -114,7 +114,7 @@ export function ProjectTable({
     if (employmentTypeFilter !== 'all') {
       result = result.filter(p => p.employmentType === employmentTypeFilter);
     }
-    // 媒体フィルタ（募集中のメディアでフィルタリング）
+    // 媒体フィルタ（掲載中のメディアでフィルタリング）
     if (mediaFilter.length > 0) {
       result = result.filter(p => 
         mediaFilter.some(filterMedia => p.activeMedia.includes(filterMedia))

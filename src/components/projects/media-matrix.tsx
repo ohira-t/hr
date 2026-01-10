@@ -32,7 +32,7 @@ const mediaConfig: Record<MediaName, { short: string; activeColor: string }> = {
 // ステータスに応じた表示スタイル
 function getStatusStyle(status: MediaStatus): { isActive: boolean; style: string } {
   switch (status) {
-    case '募集中':
+    case '掲載中':
       return { isActive: true, style: '' };
     case '準備中':
       return { isActive: true, style: 'opacity-70' };

@@ -340,7 +340,7 @@ export default function CSVPage() {
   const handleDownloadMediaTemplate = () => {
     const headers = ['HR ID', '媒体名', 'ステータス', '開始日', '終了日'].join(',');
     const sampleRows = [
-      ['T0001-01', 'ジョブメドレー', '募集中', '2025-01-01', ''],
+      ['T0001-01', 'ジョブメドレー', '掲載中', '2025-01-01', ''],
       ['T0001-01', 'ハローワーク', '準備中', '', ''],
       ['T0001-02', 'ジョブメドレー', '未掲載', '', ''],
     ].map(row => row.map(v => escapeCSV(v)).join(',')).join('\n');
@@ -762,7 +762,7 @@ export default function CSVPage() {
                   <p className="font-medium text-gray-700 mb-1">CSVフォーマット（縦持ち形式）</p>
                   <code className="block bg-gray-100 p-2 rounded text-[10px] overflow-x-auto">
                     HR ID, 媒体名, ステータス, 開始日, 終了日<br/>
-                    T0001-01, ジョブメドレー, 募集中, 2025-01-01,<br/>
+                    T0001-01, ジョブメドレー, 掲載中, 2025-01-01,<br/>
                     T0001-01, ハローワーク, 準備中, ,
                   </code>
                 </div>
@@ -903,7 +903,7 @@ export default function CSVPage() {
                 <div className="p-3 rounded-xl bg-white/60">
                   <p className="text-xs font-medium text-gray-500 mb-2">有効なステータス値</p>
                   <div className="flex flex-wrap gap-1">
-                    {['未掲載', '準備中', '審査・同期中', '募集中', '一時停止', '終了'].map(status => (
+                    {['未掲載', '準備中', '審査・同期中', '掲載中', '一時停止', '終了'].map(status => (
                       <Badge key={status} variant="secondary" className="text-[10px] bg-white">
                         {status}
                       </Badge>
@@ -927,7 +927,7 @@ export default function CSVPage() {
                   <li>• 空白のセルは「変更なし」として扱われ、既存の値が保持されます。</li>
                   <li>• 日付は「YYYY-MM-DD」形式で入力してください。</li>
                   <li>• セグメント、業態、ステータス等は定義済みの値のみ有効です。</li>
-                  <li>• 媒体ステータスは「未掲載」「準備中」「審査・同期中」「募集中」「一時停止」「終了」のいずれかを指定してください。</li>
+                  <li>• 媒体ステータスは「未掲載」「準備中」「審査・同期中」「掲載中」「一時停止」「終了」のいずれかを指定してください。</li>
                 </ul>
               </div>
             </div>

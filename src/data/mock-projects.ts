@@ -6,7 +6,7 @@ type ProjectWithoutTargetPeriod = Omit<Project, 'targetPeriod'>;
 
 // 媒体ステータスのマッピング
 function mapMediaStatus(status: string): MediaStatus {
-  if (status.includes('掲載中') || status.includes('募集中')) return '募集中';
+  if (status.includes('掲載中') || status.includes('募集中')) return '掲載中';
   if (status.includes('掲載停止') || status.includes('停止') || status.includes('終了')) return '終了';
   if (status.includes('一時停止')) return '一時停止';
   if (status.includes('準備') || status.includes('作成中')) return '準備中';
@@ -40,7 +40,7 @@ const _mockProjectsData: ProjectWithoutTargetPeriod[] = [
     handoverDate: new Date('2025-10-07'),
     deadlineDate: new Date('2025-12-25'),
     openingDate: '未定',
-    media: createMediaList('1', ['募集中', '未掲載', '準備中', '未掲載', '準備中', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載']),
+    media: createMediaList('1', ['掲載中', '未掲載', '準備中', '未掲載', '準備中', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載']),
     hurdles: '',
     notes: '事業拡大のため追加募集',
     nextAction: '12/12本面接予定→合否決める',
@@ -69,7 +69,7 @@ const _mockProjectsData: ProjectWithoutTargetPeriod[] = [
     handoverDate: new Date('2023-08-25'),
     deadlineDate: new Date('2026-02-28'),
     openingDate: '開業済',
-    media: createMediaList('2', ['募集中', '募集中', '未掲載', '募集中', '終了', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載']),
+    media: createMediaList('2', ['掲載中', '掲載中', '未掲載', '掲載中', '終了', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載']),
     hurdles: 'GH提案中',
     notes: 'A型のサビ管採用優先',
     nextAction: '支援員募集についてヒアリング',
@@ -98,7 +98,7 @@ const _mockProjectsData: ProjectWithoutTargetPeriod[] = [
     handoverDate: new Date('2025-09-29'),
     deadlineDate: null,
     openingDate: '開業済',
-    media: createMediaList('3', ['募集中', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載']),
+    media: createMediaList('3', ['掲載中', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載']),
     hurdles: 'JMは非積極',
     notes: 'メインはAirワーク',
     nextAction: '手伝い不要、必要に応じて連絡',
@@ -127,7 +127,7 @@ const _mockProjectsData: ProjectWithoutTargetPeriod[] = [
     handoverDate: new Date('2025-09-29'),
     deadlineDate: null,
     openingDate: '開業済',
-    media: createMediaList('4', ['募集中', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載']),
+    media: createMediaList('4', ['掲載中', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載']),
     hurdles: '',
     notes: '施設外ドーナツパート',
     nextAction: '手伝い不要、必要に応じて連絡',
@@ -157,7 +157,7 @@ const _mockProjectsData: ProjectWithoutTargetPeriod[] = [
     handoverDate: new Date('2025-11-15'),
     deadlineDate: new Date('2026-01-15'),
     openingDate: '2026年3月予定',
-    media: createMediaList('5', ['募集中', '募集中', '準備中', '未掲載', '準備中', '準備中', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載']),
+    media: createMediaList('5', ['掲載中', '掲載中', '準備中', '未掲載', '準備中', '準備中', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載']),
     hurdles: '',
     notes: '新規GH開設に向けた採用',
     nextAction: '媒体掲載開始',
@@ -186,7 +186,7 @@ const _mockProjectsData: ProjectWithoutTargetPeriod[] = [
     handoverDate: new Date('2025-10-20'),
     deadlineDate: new Date('2026-01-05'),
     openingDate: '2026年2月予定',
-    media: createMediaList('6', ['募集中', '募集中', '募集中', '募集中', '準備中', '準備中', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載']),
+    media: createMediaList('6', ['掲載中', '掲載中', '掲載中', '掲載中', '準備中', '準備中', '未掲載', '未掲載', '未掲載', '未掲載', '未掲載']),
     hurdles: '',
     notes: '世話人3名体制で開設予定',
     nextAction: '候補者面接調整中',
@@ -215,7 +215,7 @@ const _mockProjectsData: ProjectWithoutTargetPeriod[] = [
     handoverDate: new Date('2025-09-01'),
     deadlineDate: new Date('2025-12-31'),
     openingDate: '開業済',
-    media: createMediaList('7', ['募集中', '募集中', '募集中', '募集中', '準備中', '準備中', '未掲載', '募集中', '未掲載', '未掲載', '未掲載']),
+    media: createMediaList('7', ['掲載中', '掲載中', '掲載中', '掲載中', '準備中', '準備中', '未掲載', '掲載中', '未掲載', '未掲載', '未掲載']),
     hurdles: 'サビ管退職予定',
     notes: '後任募集',
     nextAction: '候補者スカウト送付',
@@ -274,7 +274,7 @@ const _mockProjectsData: ProjectWithoutTargetPeriod[] = [
     handoverDate: new Date('2025-08-15'),
     deadlineDate: new Date('2026-01-10'),
     openingDate: '開業済',
-    media: createMediaList('9', ['募集中', '募集中', '募集中', '募集中', '準備中', '未掲載', '未掲載', '募集中', '未掲載', '未掲載', '未掲載']),
+    media: createMediaList('9', ['掲載中', '掲載中', '掲載中', '掲載中', '準備中', '未掲載', '未掲載', '掲載中', '未掲載', '未掲載', '未掲載']),
     hurdles: '',
     notes: '増員のための採用',
     nextAction: '面接日程調整中',
@@ -303,7 +303,7 @@ const _mockProjectsData: ProjectWithoutTargetPeriod[] = [
     handoverDate: new Date('2025-10-01'),
     deadlineDate: new Date('2026-01-20'),
     openingDate: '開業済',
-    media: createMediaList('10', ['募集中', '募集中', '募集中', '未掲載', '準備中', '未掲載', '募集中', '募集中', '未掲載', '未掲載', '未掲載']),
+    media: createMediaList('10', ['掲載中', '掲載中', '掲載中', '未掲載', '準備中', '未掲載', '掲載中', '掲載中', '未掲載', '未掲載', '未掲載']),
     hurdles: '',
     notes: 'パートタイム准看護師の増員',
     nextAction: '候補者対応中',
@@ -383,7 +383,7 @@ function createMediaList(projectId: string, statuses: string[]): MediaManagement
     projectId,
     mediaName: name,
     status: mapMediaStatus(statuses[index] || '未掲載'),
-    startDate: statuses[index]?.includes('募集中') ? new Date() : null,
+    startDate: statuses[index]?.includes('掲載中') ? new Date() : null,
     endDate: null,
     updatedAt: new Date(),
   }));

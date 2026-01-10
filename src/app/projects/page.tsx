@@ -32,7 +32,7 @@ interface ApiProjectLite {
   deadlineDate: string | null;
   lastUpdated: string;
   nextAction: string;
-  activeMedia: string[]; // 募集中のメディア名の配列
+  activeMedia: string[]; // 掲載中のメディア名の配列
 }
 
 // 一覧用の軽量Project型
@@ -56,7 +56,7 @@ export interface ProjectLite {
   deadlineDate: Date | null;
   lastUpdated: Date;
   nextAction: string;
-  activeMedia: MediaName[]; // 募集中のメディア名の配列
+  activeMedia: MediaName[]; // 掲載中のメディア名の配列
 }
 
 // APIレスポンスをProjectLite型に変換（軽量版）

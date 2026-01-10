@@ -444,7 +444,7 @@ export default function NewProjectPage() {
                     onChange={(e) => handleMediaChange(index, 'status', e.target.value)}
                     className={cn(
                       'flex-1 h-8 px-2 rounded-md border text-xs focus:outline-none focus:ring-2 focus:ring-gray-900/5',
-                      media.status === '募集中' ? 'bg-green-50 border-green-200 text-green-700' :
+                      media.status === '掲載中' ? 'bg-green-50 border-green-200 text-green-700' :
                       media.status === '準備中' ? 'bg-yellow-50 border-yellow-200 text-yellow-700' :
                       media.status === '審査・同期中' ? 'bg-blue-50 border-blue-200 text-blue-700' :
                       'bg-white border-gray-200 text-gray-600'

@@ -27,7 +27,7 @@ const statusStyles: Record<MediaStatus, { bg: string; text: string; border: stri
     text: 'text-orange-700',
     border: 'border-orange-300',
   },
-  '募集中': {
+  '掲載中': {
     bg: 'bg-green-100',
     text: 'text-green-700',
     border: 'border-green-300',

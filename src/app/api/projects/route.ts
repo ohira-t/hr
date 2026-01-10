@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
           lastUpdated: true,
           nextAction: true,
           MediaManagement: {
-            where: { status: { in: ['募集中', '準備中', '審査・同期中'] } },
+            where: { status: { in: ['掲載中', '準備中', '審査・同期中'] } },
             select: { mediaName: true, status: true },
           },
         },

@@ -75,7 +75,7 @@ const SAMPLE_PROJECTS = [
     notes: '事業拡大のため追加募集',
     nextAction: '12/12本面接予定→合否決める',
     media: [
-      { mediaName: 'ジョブメドレー', status: '募集中' },
+      { mediaName: 'ジョブメドレー', status: '掲載中' },
       { mediaName: 'ウェルミージョブ', status: '未掲載' },
       { mediaName: 'ハローワーク', status: '準備中' },
     ],
@@ -105,8 +105,8 @@ const SAMPLE_PROJECTS = [
     notes: '採用活動中',
     nextAction: 'JM候補者見学',
     media: [
-      { mediaName: 'ジョブメドレー', status: '募集中' },
-      { mediaName: 'ハローワーク', status: '募集中' },
+      { mediaName: 'ジョブメドレー', status: '掲載中' },
+      { mediaName: 'ハローワーク', status: '掲載中' },
     ],
   },
   {

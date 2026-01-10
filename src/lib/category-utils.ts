@@ -162,7 +162,7 @@ export function getCategoryLabel(category: Category): string {
  */
 export function getMediaStatusColor(status: string): string {
   switch (status) {
-    case '募集中':
+    case '掲載中':
       return 'bg-green-100 text-green-800';
     case '準備中':
       return 'bg-yellow-100 text-yellow-800';

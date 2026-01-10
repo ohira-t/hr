@@ -64,7 +64,7 @@ export type MediaStatus =
   | '未掲載'
   | '準備中'
   | '審査・同期中'
-  | '募集中'
+  | '掲載中'
   | '一時停止'
   | '終了';
 
@@ -287,7 +287,7 @@ export const MEDIA_NAMES: MediaName[] = [
   'バイトル',
   'キャリアジョブズ',
 ];
-export const MEDIA_STATUSES: MediaStatus[] = ['未掲載', '準備中', '審査・同期中', '募集中', '一時停止', '終了'];
+export const MEDIA_STATUSES: MediaStatus[] = ['未掲載', '準備中', '審査・同期中', '掲載中', '一時停止', '終了'];
 
 // 都道府県リスト
 export const PREFECTURES = [

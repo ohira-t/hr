@@ -282,7 +282,7 @@ function MediaContent() {
               </h2>
               <p className="text-sm text-gray-500">
                 {selectedProject.media.filter((m) => 
-                  ['募集中', '準備中', '審査・同期中'].includes(m.status)
+                  ['掲載中', '準備中', '審査・同期中'].includes(m.status)
                 ).length}
                 媒体がアクティブ
               </p>
